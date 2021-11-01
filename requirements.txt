@@ -1,0 +1,9 @@
+discord
+requests
+googletrans==4.0.0rc1
+discord-py-slash-command
+discord-components
+PyNaCl
+youtube_dl
+flask
+wavelink
