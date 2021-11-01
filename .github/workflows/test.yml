@@ -1,8 +1,8 @@
 name: test
 
 on:
-  release:
-    types: [push]
+  push:
+    branches: [ main ]
 
 jobs:
   deploy:
