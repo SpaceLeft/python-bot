@@ -315,15 +315,15 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
                 "password": getenv('PASSWORD'),
                 "identifier": "1",
                 "region": "us",
+                "heartbeat": 5},
+            "2":{
+                "host": "akishoudayo-sub-2.herokuapp.com",
+                "port": 80,
+                "rest_uri": "http://akishoudayo-sub-2.herokuapp.com:80",
+                "password": getenv('PASSWORD'),
+                "identifier": "2",
+                "region": "us",
                 "heartbeat": 5}}
-            #"2":{
-            #    "host": "akishoudayo-sub-2.herokuapp.com",
-            #    "port": 80,
-            #    "rest_uri": "http://akishoudayo-sub-2.herokuapp.com:80",
-            #    "password": getenv('PASSWORD'),
-            #    "identifier": "2",
-            #    "region": "us",
-            #    "heartbeat": 5},
             #"3":{
             #    "host": "akishoudayo-sub-3.herokuapp.com",
             #    "port": 80,
