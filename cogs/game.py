@@ -82,7 +82,7 @@ class Game(Cog):
 							await message.edit(content=None, embed=embed, allowed_mentions=self.bot.mention)
 						except:
 							pass
-				break
+					break
 			except:
 				if n == 3:
 					await ctx.reply(content='Failed in Finalizing.')
