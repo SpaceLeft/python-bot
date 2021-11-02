@@ -323,23 +323,23 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
                 "password": getenv('PASSWORD'),
                 "identifier": "2",
                 "region": "us",
+                "heartbeat": 5},
+            "3":{
+                "host": "akishoudayo-sub-3.herokuapp.com",
+                "port": 80,
+                "rest_uri": "http://akishoudayo-sub-3.herokuapp.com:80",
+                "password": getenv('PASSWORD'),
+                "identifier": "3",
+                "region": "us",
+                "heartbeat": 5},
+            "4":{
+                "host": "akishoudayo-sub-4.herokuapp.com",
+                "port": 80,
+                "rest_uri": "http://akishoudayo-sub-4.herokuapp.com:80",
+                "password": getenv('PASSWORD'),
+                "identifier": "4",
+                "region": "us",
                 "heartbeat": 5}}
-            #"3":{
-            #    "host": "akishoudayo-sub-3.herokuapp.com",
-            #    "port": 80,
-            #    "rest_uri": "http://akishoudayo-sub-3.herokuapp.com:80",
-            #    "password": getenv('PASSWORD'),
-            #    "identifier": "3",
-            #    "region": "us",
-            #    "heartbeat": 5},
-            #"4":{
-            #    "host": "akishoudayo-sub-4.herokuapp.com",
-            #    "port": 80,
-            #    "rest_uri": "http://akishoudayo-sub-4.herokuapp.com:80",
-            #    "password": getenv('PASSWORD'),
-            #    "identifier": "4",
-            #    "region": "us",
-            #    "heartbeat": 5}}
 
         for node in nodes.values():
             await self.wavelink.initiate_node(**node)
