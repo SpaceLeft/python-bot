@@ -2,10 +2,10 @@ from discord import Embed
 from discord.ext.commands import Bot, Cog, command, Context, CommandError, UserInputError, CommandNotFound, BotMissingPermissions, CommandOnCooldown, MissingPermissions, CheckFailure, NoPrivateMessage
 from sys import version
 import settings as s
+from re import sub
 from lib import data
 from sys import exc_info
-from datetime import datetime as d
-from datetime import timedelta
+from datetime import datetime as d, timedelta
 from platform import python_version, platform
 
 
@@ -13,41 +13,46 @@ class Help(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
         self.modules = ['discord(discord.py)', 'PyNaCl', 'youtube_dl', 'requests', 'asyncio',
-                        'discord-py-slash-command', 'discord-py-interactions', 'flask']
-        self.commands = ['help', 'servercheck', 'play', 'omikuji', 'info', 'ping', 'reversetranslate', 'translate']
+                        'discord-py-slash-command', 'discord-py-interactions', 'flask', 'wavelink', 'base64',
+                        'platform', 'random', 'sys', 'os', 'functools', 'ast', 'subprocess', 're', 'datetime', 'time']
+        self.commands = ['help', 'servercheck', 'play', 'omikuji', 'info', 'ping', 'reversetranslate', 'translate',
+                         'status', 'seek', 'queue', 'skip', 'volume', 'bassboost', 'eq', 'nowplaying', 'repeat',
+                         'shuffle', 'support', 'invite', 'join', 'leave']
+
 
     @command(aliases=['info'])
     async def information(self, ctx: Context, arg=None):
-        embed = Embed(title='Information', colour=s.color1)
+        embed = Embed(title='Information', colour=data.color1)
         embed.add_field(name='Version', value=self.bot.log3[:-1], inline=False)
         embed.add_field(name='Environment', value='Python {}'.format(python_version()), inline=False)
-        embed.add_field(name='System', value=platform(terse=True), inline=False)
+        embed.add_field(name='System', value=sub('-', ' ', platform(terse=True)), inline=False)
         embed.add_field(name="Number of Commands", value=str(len(self.commands)), inline=False)
         embed.add_field(name="Number of Guilds", value=str(len(self.bot.guilds)), inline=False)
         embed.add_field(name="Number of Modules", value=str(len(self.modules)), inline=False)
+        embed.add_field(name="Number of Users", value=str(len(self.bot.user_count)), inline=False)
         embed.add_field(name="Uptime", value=timedelta(seconds=int(d.utcnow().timestamp() - self.bot.starttime)), inline=False)
         embed.add_field(name="Number of Builds", value=open('data/builds.txt', 'r', encoding='utf_8').read(), inline=False)
         embed.add_field(name="Language", value="English, Japanese", inline=False)
         embed.add_field(name="Official Site", value="https://akishoudayo.herokuapp.com/", inline=False)
         await ctx.send(embed=embed)
 
+
     @Cog.listener()
     async def on_message(self, message):
         if message.content == self.bot.user.mention:
             await self._help(message.channel)
 
+
     @Cog.listener()
     async def on_command_error(self, ctx, value):
         self.bot.log(4, value)
         error = getattr(value, 'original', value)
+        if isinstance(error, CommandNotFound):
+            return
         if isinstance(error, CommandError):
             embed = Embed(title='Error', description=value, color=data.color4)
             await ctx.send(embed=embed)
             return
-        #if isinstance(error, CommandNotFound):
-        #    embed = Embed(title='Error', description=value, color=data.color4)
-        #    await ctx.send(embed=embed)
-        #    return
         if isinstance(error, BotMissingPermissions):
             missing = [perm.replace('_', ' ').replace('guild', 'server').title() for perm in error.missing_perms]
             if len(missing) > 2:
@@ -77,18 +82,20 @@ class Help(Cog):
             except discord.Forbidden:
                 pass
 
+
     @command(aliases=[])
     async def help(self, ctx: Context, arg=None):
         if not arg:
             embed = Embed(title="Command List", description='Prefix : `c.`', color=0x00ffff, timestamp=d.utcnow())
-            embed.add_field(name='Support/Help', value='`support`,`invite`,`help`,`about`', inline=False)
-            embed.add_field(name='Music',value='`play`,`nowplaying`,`volume`,`queue`,`skip`,`remove`,`shuffle`,`join`,`disconnect`,`bassboost(beta)`',inline=False)
-            embed.add_field(name='Fun', value='`random`,`say`,`choice`,`reversetranslate`,`omikuji`', inline=False)
-            embed.add_field(name='Tool', value='`search`,`timer`,`check`,`time`,`downloader`,`translator`,`uploader`',inline=False)
+            embed.add_field(name='Support/Help', value='`support`,`invite`,`help`,`about(not available)`', inline=False)
+            #,`bassboost(beta)`,`remove`
+            embed.add_field(name='Music',value='`play`,`nowplaying`,`volume`,`queue`,`skip`,`shuffle`,`join`,`leave`,`seek`,`search`',inline=False)
+            embed.add_field(name='Fun', value='`random(coming soon)`,`say(coming soon)`,`choice(coming soon)`,`reversetranslate`,`omikuji`', inline=False)
+            embed.add_field(name='Tool', value='`googlesearch(coming soon)`,`timer(coming soon)`,`servercheck`,`time(coming soon)`,`downloader(disabled)`,`translator`,`uploader(disabled)`',inline=False)
             if ctx.author.id == 749013126866927713 or ctx.author.id == 897030094290321468:
                 embed.add_field(name='Admin', value='`reload`,`load`,`unload`,`eval`')
-            embed.add_field(name='Status', value='`ping`,`status`,`information`', inline=False)
-            embed.set_footer(text='More help : c.help <command>')
+            embed.add_field(name='Status', value='`ping`,`status(disabled)`,`information`', inline=False)
+            #embed.set_footer(text='More help : c.help <command>')
             await ctx.send(embed=embed)
 
 

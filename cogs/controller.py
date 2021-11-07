@@ -1,7 +1,8 @@
 from discord.ext.commands import Bot, Cog, Context, command
 from discord_slash import cog_ext, SlashContext
 import settings as s
-import requests
+from requests import delete
+from os import getenv
 
 
 class Controller(Cog, command_attrs=dict(hidden=True)):
@@ -10,7 +11,7 @@ class Controller(Cog, command_attrs=dict(hidden=True)):
 
     @command(name="restart")
     async def restart(self, ctx: Context):
-        requests.delete('https://api.heroku.com/apps/akishoudayo/dynos', headers={"Accept": "application/vnd.heroku+json; version=3", "Authorization": "Bearer a2a59583-3b6d-45e3-8cb4-25e707e3118b"})
+        delete('https://api.heroku.com/apps/akishoudayo/dynos', headers={"Accept": "application/vnd.heroku+json; version=3", "Authorization": "Bearer {}".format(getenv('API_KEY'))})
         await ctx.send('Successfully Restarted')
 
     @cog_ext.cog_slash(name="load", guild_ids=s.guild)

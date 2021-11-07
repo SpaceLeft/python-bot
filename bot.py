@@ -18,7 +18,11 @@ class Bot(Bot):
 		
 	async def on_ready(self):
 		self.starttime = datetime.utcnow().timestamp()
-		self.log(1, 'Logged In Successful')
+		self.user_count = []
+		for guild in self.guilds:
+			for member in guild.members:
+				self.user_count.append(member.id)
+		self.log(1, 'Logged In Successful ({} Users)'.format(len(self.user_count)))
 		for cog in Path("cogs/").glob("*.py"):
 			try:
 				self.load_extension("cogs." + cog.stem)

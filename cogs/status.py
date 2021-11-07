@@ -1,4 +1,4 @@
- from discord import Embed
+from discord import Embed
 from discord.ext.commands import Bot, Cog, command, Context
 import settings as s
 from requests import post, get
