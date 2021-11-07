@@ -10,7 +10,7 @@ class Update(Cog):
 '''
 		self.bot.log2 = '''Music commands.\n Hypixel stats commands.
 '''
-		self.bot.log3 = '''v1.0.7
+		self.bot.log3 = '''v1.0.1
 '''
 	@command()
 	async def update(self, ctx: Context):
