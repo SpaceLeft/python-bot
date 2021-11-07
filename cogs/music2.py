@@ -308,38 +308,74 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         await self.bot.wait_until_ready()
 
         nodes = {
-            "1":{
+            "1-1":{
                 "host": "akishoudayo-sub-1.herokuapp.com",
                 "port": 80,
                 "rest_uri": "http://akishoudayo-sub-1.herokuapp.com:80",
                 "password": getenv('PASSWORD'),
-                "identifier": "1",
-                "region": "us",
+                "identifier": "1-1",
+                "region": "us_central",
                 "heartbeat": 5},
-            "2":{
+            "1-2":{
                 "host": "akishoudayo-sub-2.herokuapp.com",
                 "port": 80,
                 "rest_uri": "http://akishoudayo-sub-2.herokuapp.com:80",
                 "password": getenv('PASSWORD'),
-                "identifier": "2",
-                "region": "us",
+                "identifier": "1-2",
+                "region": "us_central",
                 "heartbeat": 5},
-            "3":{
+            "1-3":{
                 "host": "akishoudayo-sub-3.herokuapp.com",
                 "port": 80,
                 "rest_uri": "http://akishoudayo-sub-3.herokuapp.com:80",
                 "password": getenv('PASSWORD'),
-                "identifier": "3",
-                "region": "us",
+                "identifier": "1-3",
+                "region": "us_central",
                 "heartbeat": 5},
-            "4":{
+            "1-4":{
                 "host": "akishoudayo-sub-4.herokuapp.com",
                 "port": 80,
                 "rest_uri": "http://akishoudayo-sub-4.herokuapp.com:80",
                 "password": getenv('PASSWORD'),
-                "identifier": "4",
-                "region": "us",
-                "heartbeat": 5}}
+                "identifier": "1-4",
+                "region": "us_central",
+                "heartbeat": 5},
+            "2-1":{
+                "host": "{}-1.{}.repl.co".format(getenv("ADDRESS"), getenv("USERNAME")),
+                "port": 443,
+                "rest_uri": "https://{}-1.{}.repl.co:443".format(getenv("ADDRESS"), getenv("USERNAME")),
+                "password": getenv('PASSWORD'),
+                "identifier": "2-1",
+                "region": "europe",
+                "heartbeat": 5,
+                "secure": True},
+            "2-2":{
+                "host": "{}-2.{}.repl.co".format(getenv("ADDRESS"), getenv("USERNAME")),
+                "port": 443,
+                "rest_uri": "https://{}-2.{}.repl.co:443".format(getenv("ADDRESS"), getenv("USERNAME")),
+                "password": getenv('PASSWORD'),
+                "identifier": "2-2",
+                "region": "europe",
+                "heartbeat": 5,
+                "secure": True},
+            "2-3":{
+                "host": "{}-3.{}.repl.co".format(getenv("ADDRESS"), getenv("USERNAME")),
+                "port": 443,
+                "rest_uri": "https://{}-3.{}.repl.co:443".format(getenv("ADDRESS"), getenv("USERNAME")),
+                "password": getenv('PASSWORD'),
+                "identifier": "2-3",
+                "region": "europe",
+                "heartbeat": 5,
+                "secure": True},
+            "2-4":{
+                "host": "{}-4.{}.repl.co".format(getenv("ADDRESS"), getenv("USERNAME")),
+                "port": 443,
+                "rest_uri": "https://{}-4.{}.repl.co:443".format(getenv("ADDRESS"), getenv("USERNAME")),
+                "password": getenv('PASSWORD'),
+                "identifier": "2-4",
+                "region": "europe",
+                "heartbeat": 5,
+                "secure": True}}
 
         for node in nodes.values():
             await self.wavelink.initiate_node(**node)
@@ -388,10 +424,11 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
             query = query.strip("<>")
             if not re.match(URL_REGEX, query):
                 query = f"ytsearch:{query}"
-            query = (await self.wavelink.get_tracks(query))[0]
-            print(query.info)
-            print(query.ytid)
-            await player.add_tracks(ctx, [query])
+            query = await self.wavelink.get_tracks(query)
+            if isinstance(query, wavelink.TrackPlaylist):
+                await player.add_tracks(ctx, query)
+            else:
+                await player.add_tracks(ctx, [query[0]])
 
     @play_command.error
     async def play_command_error(self, ctx, exc):

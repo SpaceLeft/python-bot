@@ -63,8 +63,6 @@ def duration(value: int):
 
 
 class YTDLSource:
-    FFMPEG_OPTIONS = s.ffmpeg_options
-
     def __init__(self, ctx: commands.Context, settings, *, data: dict):
         self.requester = ctx.author
         self.channel = ctx.channel

@@ -1,6 +1,6 @@
 from discord import Embed
 from discord.ext.commands import Bot, Cog, command, Context
-from datetime import datetime as d, timedelta
+from datetime import timedelta, datetime as d
 from random import randint, choice
 from googletrans import Translator
 from lib import checker, data as s
@@ -14,7 +14,7 @@ class Game(Cog):
 
 	def translate(self, num, arg, args):
 		self.result['progress-{}'.format(num)] = 0
-		for n in range(1, 3):
+		for n in range(1, 4):
 			try:
 				translator = Translator()
 				translator.translate('hello', dest='ja')
@@ -27,16 +27,16 @@ class Game(Cog):
 		result = []
 		if checker.debug == True:
 			self.bot.log(1, '[RevTranslate] Translate Started')
-		before = float(d.utcnow().timestamp())
+		before = d.utcnow().timestamp()
 		lang = choice(s.language)
 		temp1 = translator.translate(args, dest=lang)
 		temp2 = translator.translate(temp1.text, dest='ja')
 		result.append(temp2.text)
 		self.result['progress-{}'.format(num)] = '1/{} ({:.1f}%)'.format(arg, int(1*100)/int(arg))
-		after = float(d.utcnow().timestamp())
+		after = d.utcnow().timestamp()
 		self.result['duration-{}'.format(num)] = int(float(after - before) * arg)
 		for n in range(1, arg):
-			before = float(d.utcnow().timestamp())
+			before = d.utcnow().timestamp()
 			lang = choice(s.language)
 			temp1 = translator.translate(temp1.text, dest=lang)
 			temp2 = translator.translate(temp1.text, dest='ja')
@@ -44,7 +44,7 @@ class Game(Cog):
 			if checker.debug == True:
 				self.bot.log(3, '{} > {} (lang : {} > ja))'.format(temp1.text, temp2.text, lang))
 			self.result['progress-{}'.format(num)] = '{}/{} ({:.1f}%)'.format(n+1, arg, int(int(n+1)*100)/int(arg))
-			after = float(d.utcnow().timestamp())
+			after = d.utcnow().timestamp()
 			self.result['duration-{}'.format(num)] = int(float(after - before) * int(arg - int(n+1)))
 			#self.bot.log(1, 'Position: {}'.format(n))
 			#self.bot.log(1, 'Start: {}'.format(before))
@@ -60,7 +60,7 @@ class Game(Cog):
 		embed.add_field(name='進行状況', value='0/{} (0.0%)'.format(arg), inline=False)
 		embed.add_field(name='予想残り時間', value='計算中', inline=False)
 		message = await ctx.reply(embed=embed, mention_author=False)
-		for n in range(1, 3):
+		for n in range(1, 4):
 			num = str(randint(1, 9999))
 			try:
 				thread = Thread(target=self.translate, args=([num, arg, args]), name='Thread-{}'.format(num))
@@ -82,7 +82,7 @@ class Game(Cog):
 							await message.edit(content=None, embed=embed, allowed_mentions=self.bot.mention)
 						except:
 							pass
-					break
+				break
 			except:
 				if n == 3:
 					await ctx.reply(content='Failed in Finalizing.')
