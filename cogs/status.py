@@ -1,6 +1,7 @@
 from discord import Embed
 from discord.ext.commands import Bot, Cog, command, Context
 import settings as s
+from lib import data
 from requests import post, get
 from datetime import datetime
 from discord_slash import cog_ext, SlashContext
@@ -15,7 +16,7 @@ class Status(Cog):
 		message = await ctx.send('Pong!')
 		after = datetime.now()
 		response = post('https://discord.com/api/oauth2/authorize', timeout=3)
-		embed = Embed(title='Ping', colour=s.color1)
+		embed = Embed(title='Ping', colour=data.color1)
 		embed.add_field(name='Response', value='{:.2f}ms'.format((after.timestamp()-before.timestamp())*1000))
 		embed.add_field(name='Client', value='{:.2f}ms'.format(self.bot.latency*1000))
 		embed.add_field(name='API', value='{:.2f}ms'.format(response.elapsed.total_seconds()*1000))
@@ -98,7 +99,7 @@ class Status(Cog):
 		message = await ctx.send('Pong!')
 		after = datetime.now()
 		response = post('https://discord.com/api/v6', timeout=3)
-		embed = Embed(title='Ping', colour=s.color1)
+		embed = Embed(title='Ping', colour=data.color1)
 		embed.add_field(name='Response', value='{:.2f}ms'.format((after.timestamp()-before.timestamp())*1000), inline=False)
 		embed.add_field(name='Client', value='{:.2f}ms'.format(self.bot.latency*1000), inline=False)
 		embed.add_field(name='API', value='{:.2f}ms'.format(response.elapsed.total_seconds()*1000), inline=False)
