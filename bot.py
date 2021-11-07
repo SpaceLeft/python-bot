@@ -21,7 +21,8 @@ class Bot(Bot):
 		self.user_count = []
 		for guild in self.guilds:
 			for member in guild.members:
-				self.user_count.append(member.id)
+				if not member.bot:
+					self.user_count.append(member.id)
 		self.log(1, 'Logged In Successful ({} Users)'.format(len(self.user_count)))
 		for cog in Path("cogs/").glob("*.py"):
 			try:
