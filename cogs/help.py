@@ -87,7 +87,7 @@ class Help(Cog):
     async def help(self, ctx: Context, arg=None):
         if not arg:
             embed = Embed(title="Command List", description='Prefix : `c.`', color=0x00ffff, timestamp=d.utcnow())
-            embed.add_field(name='Support/Help', value='`support`,`invite`,`help`,`about(not available)`', inline=False)
+            embed.add_field(name='Support/Help', value='`support`,`invite`,`help`,`about(not available)`,`report(coming soon)`,`request(coming soon)`', inline=False)
             #,`bassboost(beta)`,`remove`
             embed.add_field(name='Music',value='`play`,`nowplaying`,`volume`,`queue`,`skip`,`shuffle`,`join`,`leave`,`seek`,`search`',inline=False)
             embed.add_field(name='Fun', value='`random(coming soon)`,`say(coming soon)`,`choice(coming soon)`,`reversetranslate`,`omikuji`', inline=False)
