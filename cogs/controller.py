@@ -11,7 +11,7 @@ class Controller(Cog, command_attrs=dict(hidden=True)):
 
     @command(name="restart")
     async def restart(self, ctx: Context):
-        delete('https://api.heroku.com/apps/akishoudayo/dynos', headers={"Accept": "application/vnd.heroku+json; version=3", "Authorization": "Bearer {}".format(getenv('API_KEY'))})
+        delete('https://api.heroku.com/apps/akishoudayo-bot/dynos', headers={"Accept": "application/vnd.heroku+json; version=3", "Authorization": "Bearer {}".format(getenv('API_KEY'))})
         await ctx.send('Successfully Restarted')
 
     @cog_ext.cog_slash(name="load", guild_ids=s.guild)
