@@ -8,11 +8,12 @@ from os import getenv
 from lib import build, logging#, slash
 import traceback
 
+disable = 'music1, music3, checker'
 
 class Bot(Bot):
 	def __init__(self):
 		self.mention = AllowedMentions(replied_user=False)
-		super().__init__(command_prefix=when_mentioned_or(s.prefix), intents=Intents.all(), activity=Activity(name="Loading...", type=3), allowed_mentions=self.mention, help_command=None)
+		super().__init__(command_prefix=when_mentioned_or(getenv('PREFIX')), intents=Intents.all(), activity=Activity(name="Loading...", type=3), allowed_mentions=self.mention, help_command=None)
 		self.log = logging.setup()
 		#self.slash = slash.setup(self)
 		
@@ -26,8 +27,9 @@ class Bot(Bot):
 		self.log(1, 'Logged In Successful ({} Users)'.format(len(self.user_count)))
 		for cog in Path("cogs/").glob("*.py"):
 			try:
-				self.load_extension("cogs." + cog.stem)
-				self.log(1, f"Loaded Extension ({cog.stem}.py)")
+				if disable.find(cog.stem) == -1:
+					self.load_extension("cogs." + cog.stem)
+					self.log(1, f"Loaded Extension ({cog.stem}.py)")
 			except Exception as e:
 				self.log(4, e)
 				traceback.print_exc()

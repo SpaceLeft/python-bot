@@ -5,7 +5,7 @@ from requests import delete
 from os import getenv
 
 
-class Controller(Cog, command_attrs=dict(hidden=True)):
+class Admin(Cog, command_attrs=dict(hidden=True)):
     def __init__(self, bot: Bot):
         self.bot = bot
 
@@ -78,4 +78,4 @@ class Controller(Cog, command_attrs=dict(hidden=True)):
 
 
 def setup(bot: Bot):
-    bot.add_cog(Controller(bot))
+    bot.add_cog(Admin(bot))

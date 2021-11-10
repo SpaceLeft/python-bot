@@ -30,9 +30,14 @@ class Help(Cog):
         embed.add_field(name="Number of Commands", value=str(len(self.commands)), inline=False)
         embed.add_field(name="Number of Guilds", value=str(len(self.bot.guilds)), inline=False)
         embed.add_field(name="Number of Modules", value=str(len(self.modules)), inline=False)
+        self.bot.user_count = []
+        for guild in self.bot.guilds:
+            for member in guild.members:
+                if not member.bot:
+                    self.bot.user_count.append(member.id)
         embed.add_field(name="Number of Users", value=str(len(self.bot.user_count)), inline=False)
-        embed.add_field(name="Uptime", value=timedelta(seconds=int(d.utcnow().timestamp() - self.bot.starttime)), inline=False)
         embed.add_field(name="Number of Builds", value=open('data/builds.txt', 'r', encoding='utf_8').read(), inline=False)
+        embed.add_field(name="Uptime", value=timedelta(seconds=int(d.utcnow().timestamp() - self.bot.starttime)), inline=False)
         embed.add_field(name="Language", value="English, Japanese", inline=False)
         embed.add_field(name="Official Site", value="https://akishoudayo.herokuapp.com/", inline=False)
         await ctx.send(embed=embed)

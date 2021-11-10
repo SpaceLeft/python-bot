@@ -13,7 +13,7 @@ class Network(Cog):
         app = self.app
         @app.route('/')
         def main():
-            return 'Bot is working'
+            return self.bot.log3[:-1]
 
     async def start(self):
         self.add_commands()
