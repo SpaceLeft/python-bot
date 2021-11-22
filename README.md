@@ -3,9 +3,13 @@
 ## Usage
   # 1. Set Environs
   `Username` - replit username (lavalink node)
+  
   `Password` - lavalink password
+  
   `Prefix` - Bot Prefix
+  
   `Token` - Discord Bot Token
+  
   `API_KEY` - Heroku API Key (Uses Status Command)
 
   # 2. Install Python and Install Modules
