@@ -1,9 +1,9 @@
 <h2 align="center">Python (Discord Bot)</h2>
 <p align="center">
-  [![Workflow](https://github.com/akishoudayo/Discord-Bot/actions/workflows/test.yml/badge.svg)](https://github.com/akishoudayo/Discord-Bot/actions/workflows/test.yml)
-  [![Bot Status](https://akishoudayo.herokuapp.com/botstatus?app=akishoudayo-bot)](https://akishoudayo.herokuapp.com/)
-  [![Version](https://akishoudayo.herokuapp.com/versionsvg)](https://github.com/akishoudayo/python-bot/commits/main)
-  [![Release](https://akishoudayo.herokuapp.com/releasesvg?repo=akishoudayo/python-bot)](https://github.com/akishoudayo/Discord-Bot/releases/latest)
+  <a href="https://github.com/akishoudayo/Discord-Bot/actions/workflows/test.yml"><img src="https://github.com/akishoudayo/Discord-Bot/actions/workflows/test.yml/badge.svg" alt="Build Status"></a>
+  <a href="https://akishoudayo.herokuapp.com/"><img src="https://akishoudayo.herokuapp.com/botstatus?app=akishoudayo-bot" alt="Bot Status"></a>
+  <a href="https://github.com/akishoudayo/python-bot/commits/main"><img src="https://akishoudayo.herokuapp.com/versionsvg" alt="Version"></a>
+  <a href="https://github.com/akishoudayo/Discord-Bot/releases/latest"><img src="https://akishoudayo.herokuapp.com/releasesvg?repo=akishoudayo/python-bot" alt="Release"></a>
 </p>
 ## Usage
   # 1. Set Environs
