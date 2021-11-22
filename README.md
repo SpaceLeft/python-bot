@@ -13,7 +13,7 @@
   `API_KEY` - Heroku API Key (Uses Status Command)
 
   # 2. Install Python and Install Modules
-  Install 
+  Install Latest Python on [here](https://www.python.org/downloads)
   Windows / Mac
   ```bash
   py -m pip install -r requirements.txt
@@ -26,7 +26,7 @@
   ```bash
   git clone https://github.com/akishoudayo/python-bot.git
   ```
-  or Download https://github.com/akishoudayo/python-bot
+  or [Download](https://github.com/akishoudayo/python-bot.git)
 
 ## Stats
 [![Workflow](https://github.com/akishoudayo/Discord-Bot/actions/workflows/test.yml/badge.svg)](https://github.com/akishoudayo/Discord-Bot/actions/workflows/test.yml)
