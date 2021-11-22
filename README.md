@@ -26,7 +26,16 @@
   ```bash
   git clone https://github.com/akishoudayo/python-bot.git
   ```
-  or [Download](https://github.com/akishoudayo/python-bot.git)
+  or [Download](https://github.com/akishoudayo/python-bot/archive/refs/heads/main.zip)
+  # 4. Run
+  Windows / Mac
+  ```bash
+  py bot.py
+  ```
+  Linux
+  ```bash
+  python bot.py
+  ```
 
 ## Stats
 [![Workflow](https://github.com/akishoudayo/Discord-Bot/actions/workflows/test.yml/badge.svg)](https://github.com/akishoudayo/Discord-Bot/actions/workflows/test.yml)
