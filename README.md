@@ -5,6 +5,7 @@
   <a href="https://github.com/akishoudayo/python-bot/commits/main"><img src="https://akishoudayo.herokuapp.com/versionsvg" alt="Version"></a>
   <a href="https://github.com/akishoudayo/Discord-Bot/releases/latest"><img src="https://akishoudayo.herokuapp.com/releasesvg?repo=akishoudayo/python-bot" alt="Release"></a>
 </p>
+
 ## Usage
   # 1. Set Environs
   `Username` - replit username (lavalink node)
