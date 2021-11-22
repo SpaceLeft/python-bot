@@ -4,7 +4,7 @@
   <a href="https://akishoudayo.herokuapp.com/"><img src="https://akishoudayo.herokuapp.com/botstatus?app=akishoudayo-bot" alt="Bot Status"></a>
   <a href="https://github.com/akishoudayo/python-bot/commits/main"><img src="https://akishoudayo.herokuapp.com/versionsvg" alt="Version"></a>
   <a href="https://github.com/akishoudayo/Discord-Bot/releases/latest"><img src="https://akishoudayo.herokuapp.com/releasesvg?repo=akishoudayo/python-bot" alt="Release"></a>
-  <br><a href="https://discord.gg/6XnHAAHuRq">Support Server</a>
+  <br><a href="https://discord.gg/6XnHAAHuRq">Support</a>
 </p>
 
 ## Usage
@@ -43,9 +43,3 @@
   ```bash
   python bot.py
   ```
-
-## Support
-- [Official Discord](https://discord.gg/6XnHAAHuRq)
-- [Author Discord](https://discordapp.com/users/749013126866927713)
-- [Twitter](https://twitter.com/akishou_dayo)
-- [Website](https://akishoudayo.herokuapp.com/home)
