@@ -340,6 +340,38 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
                 "identifier": "1-4",
                 "region": "us_central",
                 "heartbeat": 5},
+            "1-5":{
+                "host": "akishoudayo-sub-5.herokuapp.com",
+                "port": 80,
+                "rest_uri": "http://akishoudayo-sub-5.herokuapp.com:80",
+                "password": getenv('PASSWORD'),
+                "identifier": "1-5",
+                "region": "us_central",
+                "heartbeat": 5},
+            "1-6":{
+                "host": "akishoudayo-sub-6.herokuapp.com",
+                "port": 80,
+                "rest_uri": "http://akishoudayo-sub-6.herokuapp.com:80",
+                "password": getenv('PASSWORD'),
+                "identifier": "1-6",
+                "region": "us_central",
+                "heartbeat": 5},
+            "1-7":{
+                "host": "akishoudayo-sub-7.herokuapp.com",
+                "port": 80,
+                "rest_uri": "http://akishoudayo-sub-7.herokuapp.com:80",
+                "password": getenv('PASSWORD'),
+                "identifier": "1-7",
+                "region": "us_central",
+                "heartbeat": 5},
+            "1-8":{
+                "host": "akishoudayo-sub-8.herokuapp.com",
+                "port": 80,
+                "rest_uri": "http://akishoudayo-sub-8.herokuapp.com:80",
+                "password": getenv('PASSWORD'),
+                "identifier": "1-8",
+                "region": "us_central",
+                "heartbeat": 5},
             "2-1":{
                 "host": "{}-1.{}.repl.co".format(getenv("ADDRESS"), getenv("USERNAME")),
                 "port": 443,
@@ -378,7 +410,12 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
                 "secure": True}}
 
         for node in nodes.values():
-            await self.wavelink.initiate_node(**node)
+            try:
+                await self.wavelink.initiate_node(**node)
+                self.bot.nodes = self.wavelink
+            except Exception as e:
+                self.bot.log(2, e)
+
 
     def get_player(self, obj):
         if isinstance(obj, commands.Context):

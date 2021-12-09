@@ -36,6 +36,8 @@ class Game(Cog):
 		after = d.utcnow().timestamp()
 		self.result['duration-{}'.format(num)] = int(float(after - before) * arg)
 		for n in range(1, arg):
+			if self.result['check-{}'.formut(num)] == 'close':
+				return
 			before = d.utcnow().timestamp()
 			lang = choice(s.language)
 			temp1 = translator.translate(temp1.text, dest=lang)
@@ -65,6 +67,8 @@ class Game(Cog):
 			try:
 				thread = Thread(target=self.translate, args=([num, arg, args]), name='Thread-{}'.format(num))
 				thread.start()
+				self.result['check-{}'.format(num)] = None
+				self.bot.rev += 1
 				count = 0
 				while True:
 					try:
@@ -80,13 +84,18 @@ class Game(Cog):
 							embed.add_field(name='進行状況', value=self.result['progress-{}'.format(num)], inline=False)
 							embed.add_field(name='予想残り時間', value=timedelta(seconds=int(self.result['duration-{}'.format(num)])), inline=False)
 							await message.edit(content=None, embed=embed, allowed_mentions=self.bot.mention)
-						except:
-							pass
+						except Exception as e:
+							if e == '404 Not Found (error code: 10008): Unknown Message':
+								self.bot.rev = self.bot.rev - 1
+								self.result['check-{}'.format(num)] = 'close'
+								return
 				break
 			except:
 				if n == 3:
 					await ctx.reply(content='Failed in Finalizing.')
+					self.bot.rev = self.bot.rev - 1
 					return
+		self.bot.rev = self.bot.rev - 1
 		embed = Embed(title='逆翻訳しています...', colour=s.color1, timestamp=d.utcnow())
 		embed.add_field(name='進行状況', value='{0}/{0} (100%)'.format(arg), inline=False)
 		embed.add_field(name='予想残り時間', value='完了', inline=False)

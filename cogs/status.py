@@ -3,13 +3,18 @@ from discord.ext.commands import Bot, Cog, command, Context
 import settings as s
 from lib import data
 from requests import post, get
-from datetime import datetime
+from asyncio import sleep
+from datetime import datetime, timedelta
 from discord_slash import cog_ext, SlashContext
+import psutil
+from threading import active_count
 
 class Status(Cog):
 	def __init__(self, bot: Bot):
 		self.bot = bot
-	
+		self.bot.loop.create_task(self.systemstatus())
+		self.nodes = ['1-1', '1-2', '1-3', '1-4', '1-5', '1-6', '1-7', '1-8', '2-1', '2-2', '2-3', '2-4']
+
 	@cog_ext.cog_slash(name='ping', description='Send Latency')
 	async def _ping(self, ctx: SlashContext):
 		before = datetime.now()
@@ -92,7 +97,77 @@ class Status(Cog):
 		embed.add_field(name='API', value='{:.2f}ms'.format(response.elapsed.total_seconds()*1000))'''
 		embed = Embed(title='Status', description=''.join(desc), colour=s.color1)
 		await message.edit(content=None, embed=embed)
-	
+
+	async def systemstatus(self):
+		channel = self.bot.get_channel(918558401812901888)
+		await channel.purge(limit=100)
+		while True:
+			try:
+				await sleep(0.95)
+				net = psutil.net_io_counters(pernic=True)
+				embed = Embed(title='Bot Status', colour=0x3498db, timestamp=datetime.utcnow())
+				nodes = 0
+				players = []
+				us = 0
+				eu = 0
+				downnodes = ['`', '`']
+				for node in self.nodes:
+					try:
+						temp = self.bot.nodes.get_node(identifier=node)
+						if temp.is_available:
+							nodes += 1
+							if node.startswith('2-'):
+								eu += 1
+							else:
+								us += 1
+						else:
+							downnodes.append(node)
+						players += temp.players
+					except:
+						pass
+				embed.add_field(name='Ping', value='**Client** : {:.2f}ms\n**WebSocket** : {:.2f}ms'.format(self.bot.latency*1000, post('https://discord.com/api/oauth2/authorize', timeout=3).elapsed.total_seconds()*1000), inline=False)
+				embed.add_field(name='Version', value='{} ({})'.format(self.bot.log3[:-1], open('data/builds.txt', 'r', encoding='utf_8').read()), inline=False)
+				embed.add_field(name='Nodes', value='{}/12 ( eu:{} | us:{} )'.format(nodes, eu, us), inline=False)
+				embed.add_field(name='Players', value='{}'.format(len(players)), inline=False)
+				embed.add_field(name='Threads (ReverseTranslation)', value='{} ({})'.format(active_count(), self.bot.rev), inline=False)
+				embed.add_field(name='Errors', value='Coming soon...', inline=False)
+				if len(downnodes) > 2:
+					embed.add_field(name='Down Nodes', value='`,`'.join(downnodes), inline=False)
+				#embed.add_field(name='Nodes', value='{}/12'.format(nodes), inline=False)
+				embed.add_field(name='CPU Usage', value='{:.1f}%'.format(psutil.cpu_percent()), inline=False)
+				embed.add_field(name='Memory Usage', value='{:.1f}GB / {:.1f}GB ({}%)'.format(psutil.virtual_memory().used / 1024 / 1024 / 1024, psutil.virtual_memory().total / 1024 / 1024 / 1024, psutil.virtual_memory().percent), inline=False)
+				try:
+					try:
+						send = int(net['Wi-Fi 2'].bytes_sent - nett['Wi-Fi 2'].bytes_sent)
+						recieve = int(net['Wi-Fi 2'].bytes_recv - nett['Wi-Fi 2'].bytes_recv)
+					except:
+						try:
+							send = int(net['イーサネット 2'].bytes_sent - nett['イーサネット 2'].bytes_sent)
+							recieve = int(net['イーサネット 2'].bytes_recv - nett['イーサネット 2'].bytes_recv)
+						except:
+							try:
+								send = int(net['Wi-Fi 3'].bytes_sent - nett['Wi-Fi 3'].bytes_sent)
+								recieve = int(net['Wi-Fi 3'].bytes_recv - nett['Wi-Fi 3'].bytes_recv)
+							except:
+								send = int(net['lo'].bytes_sent - nett['lo'].bytes_sent)
+								recieve = int(net['lo'].bytes_recv - nett['lo'].bytes_recv)
+					embed.add_field(name='Network Usage', value='↑{:.1f}KB ↓{:.1f}KB'.format(send / 1024, recieve / 1024), inline=False)
+				except:
+					embed.add_field(name='Network Usage', value='Calculating...', inline=False)
+				embed.add_field(name="Uptime", value=timedelta(seconds=int(datetime.utcnow().timestamp() - self.bot.starttime)), inline=False)
+				embed.set_footer(text='Update Interval : 1s')
+				try:
+					await ms.edit(content=None, embed=embed)
+					nett = net
+				except:
+					try:
+						await ms.delete()
+					except:
+						pass
+					ms = await self.bot.get_channel(918558401812901888).send(embed=embed)
+			except Exception as e:
+				self.bot.log(2, e)
+
 	@command()
 	async def ping(self, ctx: Context):
 		before = datetime.now()
