@@ -7,3 +7,4 @@ PyNaCl
 youtube_dl
 flask
 wavelink
+psutil
