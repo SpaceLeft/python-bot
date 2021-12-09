@@ -110,7 +110,7 @@ class Status(Cog):
 				players = []
 				us = 0
 				eu = 0
-				downnodes = ['`', '`']
+				downnodes = []
 				for node in self.nodes:
 					try:
 						temp = self.bot.nodes.get_node(identifier=node)
@@ -131,8 +131,8 @@ class Status(Cog):
 				embed.add_field(name='Players', value='{}'.format(len(players)), inline=False)
 				embed.add_field(name='Threads (ReverseTranslation)', value='{} ({})'.format(active_count(), self.bot.rev), inline=False)
 				embed.add_field(name='Errors', value='Coming soon...', inline=False)
-				if len(downnodes) > 2:
-					embed.add_field(name='Down Nodes', value='`,`'.join(downnodes), inline=False)
+				if downnodes:
+					embed.add_field(name='Down Nodes', value='`{}`'.format('`,`'.join(downnodes)), inline=False)
 				#embed.add_field(name='Nodes', value='{}/12'.format(nodes), inline=False)
 				embed.add_field(name='CPU Usage', value='{:.1f}%'.format(psutil.cpu_percent()), inline=False)
 				embed.add_field(name='Memory Usage', value='{:.1f}GB / {:.1f}GB ({}%)'.format(psutil.virtual_memory().used / 1024 / 1024 / 1024, psutil.virtual_memory().total / 1024 / 1024 / 1024, psutil.virtual_memory().percent), inline=False)
