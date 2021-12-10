@@ -36,7 +36,7 @@ class Game(Cog):
 		after = d.utcnow().timestamp()
 		self.result['duration-{}'.format(num)] = int(float(after - before) * arg)
 		for n in range(1, arg):
-			if self.result['check-{}'.formut(num)] == 'close':
+			if self.result['check-{}'.format(num)] == 'close':
 				return
 			before = d.utcnow().timestamp()
 			lang = choice(s.language)
