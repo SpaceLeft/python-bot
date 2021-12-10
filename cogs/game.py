@@ -65,9 +65,9 @@ class Game(Cog):
 		for n in range(1, 4):
 			num = str(randint(1, 9999))
 			try:
+				self.result['check-{}'.format(num)] = 'none'
 				thread = Thread(target=self.translate, args=([num, arg, args]), name='Thread-{}'.format(num))
 				thread.start()
-				self.result['check-{}'.format(num)] = None
 				self.bot.rev += 1
 				count = 0
 				while True:
@@ -89,6 +89,8 @@ class Game(Cog):
 								self.bot.rev = self.bot.rev - 1
 								self.result['check-{}'.format(num)] = 'close'
 								return
+						else:
+							pass
 				break
 			except:
 				if n == 3:
