@@ -89,8 +89,8 @@ class Game(Cog):
 								self.bot.rev = self.bot.rev - 1
 								self.result['check-{}'.format(num)] = 'close'
 								return
-						else:
-							pass
+							else:
+								pass
 				break
 			except:
 				if n == 3:
