@@ -37,7 +37,7 @@ class Game(Cog):
 		self.result['duration-{}'.format(num)] = int(float(after - before) * arg)
 		for n in range(1, arg):
 			if self.result['check-{}'.format(num)] == 'close':
-				raise Exception('Message Deleted')
+				return
 			before = d.utcnow().timestamp()
 			lang = choice(s.language)
 			temp1 = translator.translate(temp1.text, dest=lang)
@@ -84,13 +84,10 @@ class Game(Cog):
 							embed.add_field(name='進行状況', value=self.result['progress-{}'.format(num)], inline=False)
 							embed.add_field(name='予想残り時間', value=timedelta(seconds=int(self.result['duration-{}'.format(num)])), inline=False)
 							await message.edit(content=None, embed=embed, allowed_mentions=self.bot.mention)
-						except Exception as e:
-							if e == '404 Not Found (error code: 10008): Unknown Message':
-								self.bot.rev = self.bot.rev - 1
-								self.result['check-{}'.format(num)] = 'close'
-								return
-							else:
-								pass
+						except:
+							self.bot.rev = self.bot.rev - 1
+							self.result['check-{}'.format(num)] = 'close'
+							return
 				break
 			except:
 				if n == 3:
