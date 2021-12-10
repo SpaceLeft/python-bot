@@ -37,7 +37,7 @@ class Game(Cog):
 		self.result['duration-{}'.format(num)] = int(float(after - before) * arg)
 		for n in range(1, arg):
 			if self.result['check-{}'.format(num)] == 'close':
-				return
+				raise Exception('Message Deleted')
 			before = d.utcnow().timestamp()
 			lang = choice(s.language)
 			temp1 = translator.translate(temp1.text, dest=lang)
