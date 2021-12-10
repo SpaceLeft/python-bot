@@ -149,8 +149,8 @@ class Status(Cog):
 								send = int(net['Wi-Fi 3'].bytes_sent - nett['Wi-Fi 3'].bytes_sent)
 								recieve = int(net['Wi-Fi 3'].bytes_recv - nett['Wi-Fi 3'].bytes_recv)
 							except:
-								send = int(net['lo'].bytes_sent - nett['lo'].bytes_sent)
-								recieve = int(net['lo'].bytes_recv - nett['lo'].bytes_recv)
+								send = int(net['eth0'].bytes_sent - nett['eth0'].bytes_sent)
+								recieve = int(net['eth0'].bytes_recv - nett['eth0'].bytes_recv)
 					embed.add_field(name='Network Usage', value='↑{:.1f}KB ↓{:.1f}KB'.format(send / 1024, recieve / 1024), inline=False)
 				except:
 					embed.add_field(name='Network Usage', value='Calculating...', inline=False)
