@@ -447,7 +447,7 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
             "2-9":{
                 "host": "{}-9.{}.repl.co".format(getenv("ADDRESS"), getenv("USERNAME")),
                 "port": 443,
-                "rest_uri": "https://{}-3.{}.repl.co:443".format(getenv("ADDRESS"), getenv("USERNAME")),
+                "rest_uri": "https://{}-9.{}.repl.co:443".format(getenv("ADDRESS"), getenv("USERNAME")),
                 "password": getenv('PASSWORD'),
                 "identifier": "2-9",
                 "region": "europe",
@@ -458,7 +458,7 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
                 "port": 443,
                 "rest_uri": "https://{}-10.{}.repl.co:443".format(getenv("ADDRESS"), getenv("USERNAME")),
                 "password": getenv('PASSWORD'),
-                "identifier": "2-3",
+                "identifier": "2-10",
                 "region": "europe",
                 "heartbeat": 5,
                 "secure": True},
