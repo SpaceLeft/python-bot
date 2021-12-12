@@ -127,7 +127,7 @@ class Status(Cog):
 						pass
 				embed.add_field(name='Ping', value='**Client** : {:.2f}ms\n**WebSocket** : {:.2f}ms'.format(self.bot.latency*1000, post('https://discord.com/api/oauth2/authorize', timeout=3).elapsed.total_seconds()*1000), inline=False)
 				embed.add_field(name='Version', value='{} ({})'.format(self.bot.log3[:-1], open('data/builds.txt', 'r', encoding='utf_8').read()), inline=False)
-				embed.add_field(name='Nodes', value='{}/12 ( eu:{} | us:{} )'.format(nodes, eu, us), inline=False)
+				embed.add_field(name='Nodes', value='{}/20 ( eu:{} | us:{} )'.format(nodes, eu, us), inline=False)
 				embed.add_field(name='Players', value='{}'.format(len(players)), inline=False)
 				embed.add_field(name='Threads (ReverseTranslation)', value='{} ({})'.format(active_count(), self.bot.rev), inline=False)
 				embed.add_field(name='Errors', value='Coming soon...', inline=False)
