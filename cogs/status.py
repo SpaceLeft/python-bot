@@ -13,7 +13,7 @@ class Status(Cog):
 	def __init__(self, bot: Bot):
 		self.bot = bot
 		self.bot.loop.create_task(self.systemstatus())
-		self.nodes = ['1-1', '1-2', '1-3', '1-4', '1-5', '1-6', '1-7', '1-8', '2-1', '2-2', '2-3', '2-4']
+		self.nodes = ['1-1', '1-2', '1-3', '1-4', '1-5', '1-6', '1-7', '1-8', '2-1', '2-2', '2-3', '2-4', '2-5', '2-6', '2-7', '2-8', '2-9', '2-10', '2-11', '2-12']
 
 	@cog_ext.cog_slash(name='ping', description='Send Latency')
 	async def _ping(self, ctx: SlashContext):
@@ -103,7 +103,7 @@ class Status(Cog):
 		await channel.purge(limit=100)
 		while True:
 			try:
-				await sleep(0.95)
+				await sleep(1.95)
 				net = psutil.net_io_counters(pernic=True)
 				embed = Embed(title='Bot Status', colour=0x3498db, timestamp=datetime.utcnow())
 				nodes = 0
@@ -124,7 +124,7 @@ class Status(Cog):
 							downnodes.append(node)
 						players += temp.players
 					except:
-						pass
+						downnodes.append(node)
 				embed.add_field(name='Ping', value='**Client** : {:.2f}ms\n**WebSocket** : {:.2f}ms'.format(self.bot.latency*1000, post('https://discord.com/api/oauth2/authorize', timeout=3).elapsed.total_seconds()*1000), inline=False)
 				embed.add_field(name='Version', value='{} ({})'.format(self.bot.log3[:-1], open('data/builds.txt', 'r', encoding='utf_8').read()), inline=False)
 				embed.add_field(name='Nodes', value='{}/20 ( eu:{} | us:{} )'.format(nodes, eu, us), inline=False)
@@ -155,7 +155,7 @@ class Status(Cog):
 				except:
 					embed.add_field(name='Network Usage', value='Calculating...', inline=False)
 				embed.add_field(name="Uptime", value=timedelta(seconds=int(datetime.utcnow().timestamp() - self.bot.starttime)), inline=False)
-				embed.set_footer(text='Update Interval : 1s')
+				embed.set_footer(text='Update Interval : 2s')
 				try:
 					await ms.edit(content=None, embed=embed)
 					nett = net
