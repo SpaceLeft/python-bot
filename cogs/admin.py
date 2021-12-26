@@ -14,7 +14,7 @@ class Admin(Cog, command_attrs=dict(hidden=True)):
         self.bot = bot
         self.async_compile = partial(compile, mode="exec", filename="<discord>", flags=pycf)
 
-    def async_eval(src, variables=None):
+    def async_eval(self, src, variables=None):
         if not variables:
             variables = {}
         return eval(self.async_compile('{}\nawait asyncio.sleep(0)'.format(src)), globals(), variables)
