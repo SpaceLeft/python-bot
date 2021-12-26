@@ -67,7 +67,7 @@ class Game(Cog):
 						except:
 							progress = 0
 						try:
-							duration = int(float(self.bot.data['rev'][num]['duration'] - self.bot.data['rev'][num]['start']) * int(arg - temp))
+							duration = int(float(float(self.bot.data['rev'][num]['duration'] - self.bot.data['rev'][num]['start']) / temp) * int(arg - temp))
 						except:
 							duration = 0
 						embed.add_field(name='進行状況', value=f'{temp}/{arg} ({progress:.1f}%)', inline=False)
