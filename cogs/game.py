@@ -113,7 +113,7 @@ class Game(Cog):
 		now = d.now()
 		temp = str(ctx.author.id / float(now.month / now.day))
 		value = int(temp[len(temp)-1:])
-		omikuji = ['大吉', '中吉', '小吉', '吉', '末吉', '凶', '小凶', '中凶', '大凶']
+		omikuji = ['大吉', '中吉', '小吉', '吉', '末吉', '凶']#大吉・中吉・小吉・吉・末吉・凶
 		if value == 0:
 			result = omikuji[0]
 		if value == 1:
@@ -131,9 +131,9 @@ class Game(Cog):
 		if value == 7:
 			result = omikuji[0]
 		if value == 8:
-			result = omikuji[6]
+			result = omikuji[3]
 		if value == 9:
-			result = omikuji[7]
+			result = omikuji[2]
 		embed = Embed(title='おみくじ', description='{}の結果\n\n`{}`'.format(now.strftime('%Y/%m/%d'), result), colour=s.color1, timestamp=d.utcnow())
 		await ctx.send(embed=embed)
 
