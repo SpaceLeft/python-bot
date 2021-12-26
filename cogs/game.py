@@ -111,29 +111,29 @@ class Game(Cog):
 	@command(aliases=[])
 	async def omikuji(self, ctx: Context):
 		now = d.now()
-		temp = str(ctx.author.id / float(now.month / now.day))
-		value = int(temp[len(temp)-1:])
+		author = str(ctx.author.id)[-1:]
+		value = int(str(int(author) * now.day)[-1:])
 		omikuji = ['大吉', '中吉', '小吉', '吉', '末吉', '凶']#大吉・中吉・小吉・吉・末吉・凶
 		if value == 0:
 			result = omikuji[0]
 		if value == 1:
-			result = omikuji[1]
-		if value == 2:
 			result = omikuji[2]
-		if value == 3:
-			result = omikuji[3]
-		if value == 4:
+		if value == 2:
 			result = omikuji[4]
-		if value == 5:
+		if value == 3:
 			result = omikuji[1]
+		if value == 4:
+			result = omikuji[2]
+		if value == 5:
+			result = omikuji[0]
 		if value == 6:
 			result = omikuji[5]
 		if value == 7:
-			result = omikuji[0]
+			result = omikuji[1]
 		if value == 8:
 			result = omikuji[3]
 		if value == 9:
-			result = omikuji[2]
+			result = omikuji[3]
 		embed = Embed(title='おみくじ', description='{}の結果\n\n`{}`'.format(now.strftime('%Y/%m/%d'), result), colour=s.color1, timestamp=d.utcnow())
 		await ctx.send(embed=embed)
 
