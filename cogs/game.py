@@ -4,6 +4,7 @@ from datetime import timedelta, datetime as d
 from random import randint, choice
 from googletrans import Translator
 from lib import checker, data as s
+from json import loads
 from threading import Thread
 from asyncio import sleep
 
@@ -111,8 +112,9 @@ class Game(Cog):
 	@command(aliases=[])
 	async def omikuji(self, ctx: Context):
 		now = d.now()
-		author = str(ctx.author.id)[-1:]
-		value = int(str(int(author) * now.day)[-1:])
+		match = loads(open('data/match.json', 'r').read())
+		author = str(ctx.author.id)[-3:]
+		value = int(str(int(author) ** now.day)[-1:])
 		omikuji = ['大吉', '中吉', '小吉', '吉', '末吉', '凶']#大吉・中吉・小吉・吉・末吉・凶
 		if value == 0:
 			result = omikuji[0]
