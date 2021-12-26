@@ -21,6 +21,7 @@
 
   # 2. Install Python and Install Modules
   Install Latest Python on [here](https://www.python.org/downloads)
+  
   Windows / Mac
   ```bash
   py -m pip install -r requirements.txt
