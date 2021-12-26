@@ -9,9 +9,9 @@
 
 ## Usage
   # 1. Set Environs
-  `Username` - replit username (lavalink node)
+  `Username` - replit username (Lavalink node)
   
-  `Password` - lavalink password
+  `Password` - Lavalink password
   
   `Prefix` - Bot Prefix
   
