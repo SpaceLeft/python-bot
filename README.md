@@ -9,8 +9,6 @@
 
 ## Usage
   # 1. Set Environs
-  `Username` - replit username (Lavalink node)
-  
   `Password` - Lavalink password
   
   `Prefix` - Bot Prefix
@@ -18,8 +16,15 @@
   `Token` - Discord Bot Token
   
   `API_KEY` - Heroku API Key (Uses Status Command)
-
-  # 2. Install Python and Install Modules
+  # 2. Edit settings.py
+  ~~`data` - Data Storage Channel~~(Don't Edit)
+  
+  ~~`guild` - Slash Command Developer Guild~~(Not Available)
+  
+  `prefix` - Set to Bot Prefix
+  
+  `nodes` - Set Lavalink Nodes like example
+  # 3. Install Python and Install Modules
   Install Latest Python on [here](https://www.python.org/downloads)
   
   Windows / Mac
@@ -30,12 +35,12 @@
   ```bash
   pip install -r requirements.txt
   ```
-  # 3. Clone Repository
+  # 4. Clone Repository
   ```bash
   git clone https://github.com/akishoudayo/python-bot.git
   ```
   or [Download](https://github.com/akishoudayo/python-bot/archive/refs/heads/main.zip)
-  # 4. Run
+  # 5. Run
   Windows / Mac
   ```bash
   py bot.py
