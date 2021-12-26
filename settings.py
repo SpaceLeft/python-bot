@@ -1,18 +1,181 @@
+from os import getenv
 data = '772380469094252554'
 guild = [768748867659235348, 885910134264590347]
 prefix = 'c.'
 debug = False
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+password = getenv('PASSWORD')
+username = getenv("USERNAME")
+address = getenv("ADDRESS")
+nodes = {
+    "1-1":{
+        "host": "akishoudayo-sub-1.herokuapp.com",
+        "port": 80,
+        "rest_uri": "http://akishoudayo-sub-1.herokuapp.com:80",
+        "password": password,
+        "identifier": "1-1",
+        "region": "us_central",
+        "heartbeat": 5},
+    "1-2":{
+        "host": "akishoudayo-sub-2.herokuapp.com",
+        "port": 80,
+        "rest_uri": "http://akishoudayo-sub-2.herokuapp.com:80",
+        "password": getenv('PASSWORD'),
+        "password": password,
+        "region": "us_central",
+        "heartbeat": 5},
+    "1-3":{
+        "host": "akishoudayo-sub-3.herokuapp.com",
+        "port": 80,
+        "rest_uri": "http://akishoudayo-sub-3.herokuapp.com:80",
+        "password": password,
+        "identifier": "1-3",
+        "region": "us_central",
+        "heartbeat": 5},
+    "1-4":{
+        "host": "akishoudayo-sub-4.herokuapp.com",
+        "port": 80,
+        "rest_uri": "http://akishoudayo-sub-4.herokuapp.com:80",
+        "password": password,
+        "identifier": "1-4",
+        "region": "us_central",
+        "heartbeat": 5},
+    "1-5":{
+        "host": "akishoudayo-sub-5.herokuapp.com",
+        "port": 80,
+        "rest_uri": "http://akishoudayo-sub-5.herokuapp.com:80",
+        "password": password,
+        "identifier": "1-5",
+        "region": "us_central",
+        "heartbeat": 5},
+    "1-6":{
+        "host": "akishoudayo-sub-6.herokuapp.com",
+        "port": 80,
+        "rest_uri": "http://akishoudayo-sub-6.herokuapp.com:80",
+        "password": password,
+        "identifier": "1-6",
+        "region": "us_central",
+        "heartbeat": 5},
+    "1-7":{
+        "host": "akishoudayo-sub-7.herokuapp.com",
+        "port": 80,
+        "rest_uri": "http://akishoudayo-sub-7.herokuapp.com:80",
+        "password": password,
+        "identifier": "1-7",
+        "region": "us_central",
+        "heartbeat": 5},
+    "1-8":{
+        "host": "akishoudayo-sub-8.herokuapp.com",
+        "port": 80,
+        "rest_uri": "http://akishoudayo-sub-8.herokuapp.com:80",
+        "password": password,
+        "identifier": "1-8",
+        "region": "us_central",
+        "heartbeat": 5},
+    "2-1":{
+        "host": "{}-1.{}.repl.co".format(),
+        "port": 443,
+        "rest_uri": "https://{}-1.{}.repl.co:443".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "password": password,
+        "identifier": "2-1",
+        "region": "europe",
+        "heartbeat": 5,
+        "secure": True},
+    "2-2":{
+        "host": "{}-2.{}.repl.co".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "port": 443,
+        "rest_uri": "https://{}-2.{}.repl.co:443".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "password": password,
+        "identifier": "2-2",
+        "region": "europe",
+        "heartbeat": 5,
+        "secure": True},
+    "2-3":{
+        "host": "{}-3.{}.repl.co".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "port": 443,
+        "rest_uri": "https://{}-3.{}.repl.co:443".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "password": password,
+        "identifier": "2-3",
+        "region": "europe",
+        "heartbeat": 5,
+        "secure": True},
+    "2-4":{
+        "host": "{}-4.{}.repl.co".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "port": 443,
+        "rest_uri": "https://{}-4.{}.repl.co:443".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "password": password,
+        "identifier": "2-4",
+        "region": "europe",
+        "heartbeat": 5,
+        "secure": True},
+    "2-5":{
+        "host": "{}-5.{}.repl.co".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "port": 443,
+        "rest_uri": "https://{}-5.{}.repl.co:443".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "password": password,
+        "identifier": "2-5",
+        "region": "europe",
+        "heartbeat": 5,
+        "secure": True},
+    "2-6":{
+        "host": "{}-6.{}.repl.co".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "port": 443,
+        "rest_uri": "https://{}-6.{}.repl.co:443".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "password": password,
+        "identifier": "2-6",
+        "region": "europe",
+        "heartbeat": 5,
+        "secure": True},
+    "2-7":{
+        "host": "{}-7.{}.repl.co".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "port": 443,
+        "rest_uri": "https://{}-7.{}.repl.co:443".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "password": password,
+        "identifier": "2-7",
+        "region": "europe",
+        "heartbeat": 5,
+        "secure": True},
+    "2-8":{
+        "host": "{}-8.{}.repl.co".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "port": 443,
+        "rest_uri": "https://{}-8.{}.repl.co:443".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "password": password,
+        "identifier": "2-8",
+        "region": "europe",
+        "heartbeat": 5,
+        "secure": True},
+    "2-9":{
+        "host": "{}-9.{}.repl.co".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "port": 443,
+        "rest_uri": "https://{}-9.{}.repl.co:443".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "password": password,
+        "identifier": "2-9",
+        "region": "europe",
+        "heartbeat": 5,
+        "secure": True},
+    "2-10":{
+        "host": "{}-10.{}.repl.co".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "port": 443,
+        "rest_uri": "https://{}-10.{}.repl.co:443".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "password": password,
+        "identifier": "2-10",
+        "region": "europe",
+        "heartbeat": 5,
+        "secure": True},
+    "2-11":{
+        "host": "{}-11.{}.repl.co".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "port": 443,
+        "rest_uri": "https://{}-11.{}.repl.co:443".format(getenv("ADDRESS"), getenv("USERNAME")),
+        "password": password,
+        "identifier": "2-11",
+        "region": "europe",
+        "heartbeat": 5,
+        "secure": True},
+    "2-12":{
+        "host": f"{address}-12.{username}.repl.co",
+        "port": 443,
+        "rest_uri": f"https://{address}-12.{username}.repl.co:443",
+        "password": password,
+        "identifier": "2-12",
+        "region": "europe",
+        "heartbeat": 5,
+        "secure": True}}

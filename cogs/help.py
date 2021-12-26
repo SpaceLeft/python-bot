@@ -12,10 +12,10 @@ from platform import python_version, platform
 class Help(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.modules = ['discord(discord.py)', 'PyNaCl', 'youtube_dl', 'requests', 'asyncio',
+        self.data['modules'] = ['discord(discord.py)', 'PyNaCl', 'youtube_dl', 'requests', 'asyncio',
                         'discord-py-slash-command', 'discord-py-interactions', 'flask', 'wavelink', 'base64',
                         'platform', 'random', 'sys', 'os', 'functools', 'ast', 'subprocess', 're', 'datetime', 'time']
-        self.commands = ['help', 'servercheck', 'play', 'omikuji', 'info', 'ping', 'reversetranslate', 'translate',
+        self.data['commands'] = ['random', 'choice', 'say', 'help', 'servercheck', 'play', 'omikuji', 'info', 'ping', 'reversetranslate', 'translate',
                          'status', 'seek', 'queue', 'skip', 'volume', 'bassboost', 'eq', 'nowplaying', 'repeat',
                          'shuffle', 'support', 'invite', 'join', 'leave']
 
@@ -103,7 +103,7 @@ class Help(Cog):
             if ctx.author.id == 749013126866927713 or ctx.author.id == 897030094290321468:
                 embed.add_field(name='Admin', value='`reload`,`load`,`unload`,`eval`')
             embed.add_field(name='Status', value='`ping`,`status(disabled)`,`information`', inline=False)
-            #embed.set_footer(text='More help : c.help <command>')
+            embed.set_footer(text='More help : c.help <command>')
             await ctx.send(embed=embed)
 
 
