@@ -12,7 +12,7 @@ from os import getenv
 class Admin(Cog, command_attrs=dict(hidden=True)):
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.async_compile = partial(compile, mode="exec", filename="<discord>", flags=pycf)]
+        self.async_compile = partial(compile, mode="exec", filename="<discord>", flags=pycf)
 
     def async_eval(src, variables=None):
         if not variables:

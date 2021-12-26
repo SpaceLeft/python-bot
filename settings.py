@@ -19,8 +19,8 @@ nodes = {
         "host": "akishoudayo-sub-2.herokuapp.com",
         "port": 80,
         "rest_uri": "http://akishoudayo-sub-2.herokuapp.com:80",
-        "password": getenv('PASSWORD'),
         "password": password,
+        "identifier": "1-2",
         "region": "us_central",
         "heartbeat": 5},
     "1-3":{
@@ -72,7 +72,7 @@ nodes = {
         "region": "us_central",
         "heartbeat": 5},
     "2-1":{
-        "host": "{}-1.{}.repl.co".format(),
+        "host": "{}-1.{}.repl.co".format(getenv("ADDRESS"), getenv("USERNAME")),
         "port": 443,
         "rest_uri": "https://{}-1.{}.repl.co:443".format(getenv("ADDRESS"), getenv("USERNAME")),
         "password": password,

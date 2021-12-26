@@ -14,6 +14,7 @@ class Bot(Bot):
 		self.mention = AllowedMentions(replied_user=False)
 		super().__init__(command_prefix=when_mentioned_or(getenv('PREFIX')), intents=Intents.all(), activity=Activity(name="Loading...", type=3), allowed_mentions=self.mention, help_command=None)
 		self.log = logging.setup()
+		self.data = {'start': datetime.utcnow().timestamp(), 'rev': {}, 'user': 0, 'userbot':0, 'version': None}
 		for cog in Path("cogs/").glob("*.py"):
 			try:
 				if disable.find(cog.stem) == -1:
@@ -21,11 +22,9 @@ class Bot(Bot):
 					self.log(1, f"Loaded Extension ({cog.stem}.py)")
 			except Exception as e:
 				self.log(4, e)
-		self.data = {'rev': {}, 'user': 0, 'version': self.log3[:-1]}
 		#self.slash = slash.setup(self)
 		
 	async def on_ready(self):
-		self.starttime = datetime.utcnow().timestamp()
 		user = []
 		for guild in self.guilds:
 			for member in guild.members:
@@ -33,7 +32,7 @@ class Bot(Bot):
 					user.append(member.id)
 		self.data['user'] = len(user)
 		self.log(1, 'Logged In Successful ({} Users)'.format(len(user)))
-		await self.change_presence(activity=Activity(name="{}help | {}".format(getenv('PREFIX'), self.log3[:-1]), type=3))
+		await self.change_presence(activity=Activity(name="{}help | {}".format(getenv('PREFIX'), self.data['version']), type=3))
 
 if __name__ == "__main__":
     bot = Bot()

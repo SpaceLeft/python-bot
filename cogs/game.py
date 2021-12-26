@@ -23,28 +23,25 @@ class Game(Cog):
 			if n == 3:
 				raise Exception
 		result = []
-		before = d.utcnow().timestamp()
+		self.bot.data['rev'][num]['start'] = d.utcnow().timestamp()
 		lang = choice(s.language)
 		temp1 = translator.translate(args, dest=lang)
 		temp2 = translator.translate(temp1.text, dest='ja')
 		result.append(temp2.text)
-		self.bot.data['rev'][f'{num}']['progress'] = f'1/{arg} ({int(1*100)/int(arg):.1f}%)'
-		after = d.utcnow().timestamp()
-		self.result['duration-{}'.format(num)] = int(float(after - before) * arg)
+		self.bot.data['rev'][num]['progress'] = 1
+		self.bot.data['rev'][num]['duration'] = d.utcnow().timestamp()
 		for n in range(1, arg):
-			if not self.result['check-{}'.format(num)]:
+			if not num in self.bot.data['rev']:
 				return
-			before = d.utcnow().timestamp()
 			lang = choice(s.language)
 			temp1 = translator.translate(temp1.text, dest=lang)
 			temp2 = translator.translate(temp1.text, dest='ja')
 			result.append(temp2.text)
 			if checker.debug == True:
 				self.bot.log(3, f'{temp1.text} > {temp2.text} (lang : {lang} > ja))')
-			self.result['progress-{}'.format(num)] = f'{n+1}/{arg} ({int(int(n+1)*100)/int(arg):.1f}%)'
-			after = d.utcnow().timestamp()
--^^2			self.result['duration-{}'.format(num)] = int(float(after - before) * int(arg - int(n+1)))
-		self.result[num] = result
+			self.bot.data['rev'][num]['progress'] = n+1
+			self.bot.data['rev'][num]['duration'] = d.utcnow().timestamp()
+		self.bot.data['rev'][num]['result'] = result
 
 	@command(aliases=['rev', 're', 'reversetranslate'])
 	async def reversetranslation(self, ctx: Context, arg: int, *, args: str):
@@ -54,31 +51,32 @@ class Game(Cog):
 		message = await ctx.reply(embed=embed, mention_author=False)
 		for n in range(1, 4):
 			num = str(randint(1, 9999))
-			self.bot.data['rev'][f'{num}'] = {'duration': None, 'check': True, 'progress': f'0/{arg} (0.0%)'}
+			self.bot.data['rev'][num] = {'duration': None, 'progress': 0, 'result': None}
+			self.bot.log(1, self.bot.data['rev'])
 			try:
-				thread = Thread(target=self.translate, args=([num, arg, args]), name=f'Thread-{num}')
+				thread = Thread(target=self.translate, args=([num, arg, args]), name=f'thread-{num}')
 				thread.start()
-				self.bot.rev += 1
 				count = 0
-				while self.result[num] != None:
+				while not self.bot.data['rev'][num]['result']:
 					await sleep(3)
 					try:
 						embed = Embed(title='逆翻訳しています...', colour=s.color1, timestamp=d.utcnow())
-						embed.add_field(name='進行状況', value=self.result[f'progress-{num}'], inline=False)
-						duration = int(float(after - before) * int(arg - int(n + 1)))
-						embed.add_field(name='予想残り時間', value=timedelta(seconds=self.bot.data['rev'][f'{num}']['duration']), inline=False)
+						temp = self.bot.data['rev'][num]['progress']
+						progress = float(self.bot.data['rev'][num]['progress'] / arg) * 100
+						embed.add_field(name='進行状況', value=f'{temp}/{arg} ({progress:.1f}%)', inline=False)
+						duration = float(self.bot.data['rev'][num]['duration'] - self.bot.data['rev'][num]['start']) * self.bot.data['rev'][num]['progress']
+						embed.add_field(name='予想残り時間', value=timedelta(seconds=int(duration)), inline=False)
 						await message.edit(content=None, embed=embed, allowed_mentions=self.bot.mention)
-					except:
-						self.bot.rev = self.bot.rev - 1
-						self.result[f'check-{num}'] = False
+					except Exception as e:
+						self.bot.log(4, e)
+						del self.bot.data['rev'][num]
 						return
 				break
 			except:
+				del self.bot.data['rev'][num]
 				if n == 3:
 					await ctx.reply(content='Failed in Finalizing.')
-					self.bot.rev = self.bot.rev - 1
 					return
-		self.bot.rev = self.bot.rev - 1
 		embed = Embed(title='逆翻訳しています...', colour=s.color1, timestamp=d.utcnow())
 		embed.add_field(name='進行状況', value='{0}/{0} (100%)'.format(arg), inline=False)
 		embed.add_field(name='予想残り時間', value='完了', inline=False)
@@ -86,15 +84,15 @@ class Game(Cog):
 		finalize = []
 		finalize2 = []
 		finalize.append('{}\n'.format(args))
-		for n in range(len(self.result[num])):
-			if 4000 - len(''.join(finalize)) - len(self.result[num][n]) >= 100:
-				finalize.append('\n{}. {}'.format(n+1, self.result[num][n]))
-			elif 4000 - len(''.join(finalize2)) - len(self.result[num][n]) >= 100:
-				finalize2.append('{}. {}\n'.format(n+1, self.result[num][n]))
+		for n in range(len(self.bot.data['rev'][num]['result'])):
+			if 4000 - len(''.join(finalize)) - len(self.bot.data['rev'][num]['result'][n]) >= 100:
+				finalize.append('\n{}. {}'.format(n+1, self.bot.data['rev'][num]['result'][n]))
+			elif 4000 - len(''.join(finalize2)) - len(self.bot.data['rev'][num]['result'][n]) >= 100:
+				finalize2.append('{}. {}\n'.format(n+1, self.bot.data['rev'][num]['result'][n]))
 			else:
 				await ctx.reply(content='Error : The result is over 8000 characters.')
 				return
-		del self.result[num]
+		del self.bot.data['rev'][num]
 		embed = Embed(title='Result', description=''.join(finalize), colour=0x7ED6DE, timestamp=d.utcnow())
 		await ctx.reply(embed=embed, mention_author=False)
 		if len(finalize2) != 0:
@@ -136,7 +134,7 @@ class Game(Cog):
 
 	@command(aliases=['randint'])
 	async def random(self, ctx: Context, start:int, end:int):
-		await ctx.send(str(randint(start,end))
+		await ctx.send(str(randint(start,end)))
 
 	@command(aliases=['pick'])
 	async def choice(self, ctx: Context, *, arg:str):
