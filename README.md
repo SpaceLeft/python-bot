@@ -17,9 +17,9 @@
   
   `API_KEY` - Heroku API Key (Uses Status Command)
   # 2. Edit settings.py
-  ~~`data` - Data Storage Channel~~(Don't Edit)
+  ~~`data` - Data Storage Channel~~ Don't Edit
   
-  ~~`guild` - Slash Command Developer Guild~~(Not Available)
+  ~~`guild` - Slash Command Developer Guild~~ Not Available
   
   `prefix` - Set to Bot Prefix
   
