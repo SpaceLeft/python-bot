@@ -62,17 +62,19 @@ class Game(Cog):
 					try:
 						embed = Embed(title='逆翻訳しています...', colour=s.color1, timestamp=d.utcnow())
 						temp = self.bot.data['rev'][num]['progress']
-						if not temp:
-							progress = 0
-							duration = 0
-						else:
-							duration = float(self.bot.data['rev'][num]['duration'] - self.bot.data['rev'][num]['start']) / int(arg - temp)
+						try:
 							progress = float(temp / arg) * 100
+						except:
+							progress = 0
+						try:
+							duration = int(float(self.bot.data['rev'][num]['duration'] - self.bot.data['rev'][num]['start']) / int(arg - temp))
+						except:
+							duration = 0
 						embed.add_field(name='進行状況', value=f'{temp}/{arg} ({progress:.1f}%)', inline=False)
 						if not duration:
 							embed.add_field(name='予想残り時間', value='計算中', inline=False)
 						else:
-							embed.add_field(name='予想残り時間', value=timedelta(seconds=int(duration)), inline=False)
+							embed.add_field(name='予想残り時間', value=timedelta(seconds=duration), inline=False)
 						await message.edit(content=None, embed=embed, allowed_mentions=self.bot.mention)
 					except Exception as e:
 						self.bot.log(4, e)
