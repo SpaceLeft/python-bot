@@ -97,15 +97,15 @@ class Help(Cog):
     async def help(self, ctx: Context, arg=None):
         if not arg:
             embed = Embed(title="Command List", description='Prefix : `c.`', color=0x00ffff, timestamp=d.utcnow())
-            embed.add_field(name='Support/Help', value='`~~support~~`,`~~invite~~`,`help`,`~~about~~`,`~~report~~`,`~~request~~`', inline=False)
+            embed.add_field(name='Support/Help', value='~~`support`~~,~~`invite`~~,`help`,~~`about`~~,~~`report`~~,~~`request`~~', inline=False)
             #,`bassboost(beta)`,`remove`
             embed.add_field(name='Music',value='`play`,`nowplaying`,`volume`,`queue`,`skip`,`shuffle`,`join`,`leave`,`seek`,`search`',inline=False)
-            embed.add_field(name='Fun', value='`~~random~~`,`~~say~~`,`~~choice~~`,`reversetranslate`,`omikuji`', inline=False)
-            embed.add_field(name='Tool', value='`~~googlesearch~~`,`~~timer~~`,`servercheck`,`~~time~~`,`~~downloader~~`,`translator`,`~~uploader~~`',inline=False)
+            embed.add_field(name='Fun', value='~~`random`~~,~~`say`~~,~~`choice`~~,`reversetranslate`,`omikuji`', inline=False)
+            embed.add_field(name='Tool', value='~~`googlesearch`~~,~~`timer`~~,`servercheck`,~~`time`~~,~~`downloader`~~,`translator`,~~`uploader`~~',inline=False)
             if ctx.author.id == 749013126866927713 or ctx.author.id == 897030094290321468:
                 embed.add_field(name='Admin', value='`reload`,`load`,`unload`,`eval`')
-            embed.add_field(name='Status', value='`ping`,`~~status~~`,`information`', inline=False)
-            embed.set_footer(text='More help : c.help <command>')
+            embed.add_field(name='Status', value='`ping`,~~`status`~~,`information`', inline=False)
+            #embed.set_footer(text='More help : c.help <command>')
             await ctx.send(embed=embed)
 
 
