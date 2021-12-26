@@ -101,9 +101,9 @@ class Status(Cog):
 	async def on_ready(self):
 		channel = self.bot.get_channel(918558401812901888)
 		if self.bot.user.id == 907167351634542593:
-			ms = await channel.fetch_message(924530978075058226)
+			ms = await channel.fetch_message(924555799311826944)
 		if self.bot.user.id == 907531399433715752:
-			ms = await channel.fetch_message(924531026666070037)
+			ms = await channel.fetch_message(924555934536171531)
 		while True:
 			try:
 				await sleep(1.95)
