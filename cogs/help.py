@@ -41,7 +41,7 @@ class Help(Cog):
         self.bot.data['userbot'] = len(user_bot_count)
         embed.add_field(name="Number of Users", value='{} (All : {})'.format(self.bot.data['user'], self.bot.data['userbot']), inline=False)
         embed.add_field(name="Number of Builds", value=open('data/builds.txt', 'r', encoding='utf_8').read(), inline=False)
-        embed.add_field(name="Uptime", value=timedelta(seconds=int(d.utcnow().timestamp() - self.bot.starttime)), inline=False)
+        embed.add_field(name="Uptime", value=timedelta(seconds=int(d.utcnow().timestamp() - self.bot.data['start'])), inline=False)
         embed.add_field(name="Language", value="English, Japanese", inline=False)
         embed.add_field(name="Official Site", value="https://akishoudayo.herokuapp.com/", inline=False)
         await ctx.send(embed=embed)
