@@ -12,6 +12,7 @@ from os import getenv
 class Admin(Cog, command_attrs=dict(hidden=True)):
     def __init__(self, bot: Bot):
         self.bot = bot
+        self.admin = open('admin.json', 'r').read()
         self.async_compile = partial(compile, mode="exec", filename="<discord>", flags=pycf)
 
     def async_eval(self, src, variables=None):
@@ -21,33 +22,32 @@ class Admin(Cog, command_attrs=dict(hidden=True)):
 
     @command()
     async def eval(self, ctx: Context, types : str, *, arg: str):
-        if ctx.author.id == 897030094290321468 or ctx.author.id == 749013126866927713:
-            args = {"import":  __import__, "client": self.bot, "self": self.bot, "bot": self.bot, "ctx": ctx}
-            if arg.find('```') != -1:
-                if arg.find('```python') != -1:
-                    arg = arg.split('```python')[1].split('```')[0]
-                elif arg.find('```py') != -1:
-                    arg = arg.split('```py')[1].split('```')[0]
-                elif arg.find('```') != -1:
-                    arg = arg.split('```')[1].split('```')[0]
-            try:
-                if types == 'a':
-                    result = await self.async_eval(arg, args)
-                elif types == 'b':
-                    open('{}.py'.format(ctx.author.id), 'w').write(arg)
-                    result = run('python {}.py'.format(ctx.author.id), stdout=PIPE, stderr=PIPE, shell=True)
-                    if not result.stderr:
-                        result = result.stdout
-                    else:
-                        raise CommandError('Error : {}'.format(result.stderr))
+        args = {"import":  __import__, "client": self.bot, "self": self.bot, "bot": self.bot, "ctx": ctx}
+        if arg.find('```') != -1:
+            if arg.find('```python') != -1:
+                arg = arg.split('```python')[1].split('```')[0]
+            elif arg.find('```py') != -1:
+                arg = arg.split('```py')[1].split('```')[0]
+            elif arg.find('```') != -1:
+                arg = arg.split('```')[1].split('```')[0]
+        try:
+            if types == 'a':
+                result = await self.async_eval(arg, args)
+            elif types == 'b':
+                open('{}.py'.format(ctx.author.id), 'w').write(arg)
+                result = run('python {}.py'.format(ctx.author.id), stdout=PIPE, stderr=PIPE, shell=True)
+                if not result.stderr:
+                    result = result.stdout
                 else:
-                    result = eval(arg)
-                if result is not None:
-                    if type(result) == bytes:
-                        result = result.decode()
-                    await ctx.send(f'```python\n{result}\n```')
-            except Exception as e:
-                raise CommandError('Error : {}'.format(e))
+                    raise CommandError('Error : {}'.format(result.stderr))
+            else:
+                result = eval(arg)
+            if result is not None:
+                if type(result) == bytes:
+                    result = result.decode()
+                await ctx.send(f'```python\n{result}\n```')
+        except Exception as e:
+            raise CommandError('Error : {}'.format(e))
 
     @command(name="restart")
     async def restart(self, ctx: Context):
@@ -84,7 +84,7 @@ class Admin(Cog, command_attrs=dict(hidden=True)):
     async def cog_check(self, ctx: Context):
         if await ctx.bot.is_owner(ctx.author):
             return True
-        if ctx.author.id == 897030094290321468 or ctx.author.id == 749013126866927713:
+        if self.admin.find(str(ctx.author.id)) != -1:
             return True
         await ctx.reply("You cannot run this command.")
         return False
