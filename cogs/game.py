@@ -134,7 +134,7 @@ class Game(Cog):
 			result = omikuji[6]
 		if value == 9:
 			result = omikuji[7]
-		embed = Embed(title='おみくじ', description='{}の結果\n\n`{}`'.format(now.strftime('%Y/%m/%d'), result), colour=s.color1, timestamp=datetime.utcnow())
+		embed = Embed(title='おみくじ', description='{}の結果\n\n`{}`'.format(now.strftime('%Y/%m/%d'), result), colour=s.color1, timestamp=d.utcnow())
 		await ctx.send(embed=embed)
 
 	@command(aliases=[])
