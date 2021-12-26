@@ -34,9 +34,9 @@ class Help(Cog):
         user_bot_count = []
         for guild in self.bot.guilds:
             for member in guild.members:
-                self.bot.user_bot_count.append(member.id)
+                user_bot_count.append(member.id)
                 if not member.bot:
-                    self.bot.user_count.append(member.id)
+                    user_count.append(member.id)
         self.bot.data['user'] = len(user_count)
         self.bot.data['userbot'] = len(user_bot_count)
         embed.add_field(name="Number of Users", value='{} (All : {})'.format(self.bot.data['user'], self.bot.data['userbot']), inline=False)
