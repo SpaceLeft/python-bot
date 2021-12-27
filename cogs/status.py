@@ -99,6 +99,7 @@ class Status(Cog):
 
 	@Cog.listener()
 	async def on_ready(self):
+		interval = 2
 		channel = self.bot.get_channel(918558401812901888)
 		if self.bot.user.id == 907167351634542593:
 			ms = await channel.fetch_message(924555799311826944)
@@ -106,7 +107,7 @@ class Status(Cog):
 			ms = await channel.fetch_message(924555934536171531)
 		while True:
 			try:
-				await sleep(1.95)
+				await sleep(interval)
 				net = psutil.net_io_counters(pernic=True)
 				embed = Embed(title='Bot Status', colour=0x3498db, timestamp=datetime.utcnow())
 				nodes = 0
@@ -154,16 +155,16 @@ class Status(Cog):
 							except:
 								send = int(net['eth0'].bytes_sent - nett['eth0'].bytes_sent)
 								recieve = int(net['eth0'].bytes_recv - nett['eth0'].bytes_recv)
-					embed.add_field(name='Network Usage', value='↑{:.1f}KB ↓{:.1f}KB'.format(send / 1024, recieve / 1024), inline=False)
+					embed.add_field(name='Network Usage', value='↑{:.1f}KB ↓{:.1f}KB'.format(send / 1024 / interval, recieve / 1024 / interval), inline=False)
 				except:
 					embed.add_field(name='Network Usage', value='Calculating...', inline=False)
 				embed.add_field(name="Uptime", value=timedelta(seconds=int(datetime.utcnow().timestamp() - self.bot.data['start'])), inline=False)
-				embed.set_footer(text='Update Interval : 2s')
+				embed.set_footer(text=f'Update Interval : {interval}s')
+				nett = net
 				try:
 					await ms.edit(content=None, embed=embed)
-					nett = net
-				except:
-					pass
+				except Exception as e:
+					self.bot.log(2, e)
 			except Exception as e:
 				self.bot.log(2, e)
 
