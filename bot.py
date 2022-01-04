@@ -25,7 +25,7 @@ class bot(Bot):
 		self.data['nodes'] = []
 		node_count = 1
 		for node in address:
-			self.data['nodes'].append({"host": node, "port": 80, "name": node_count})
+			self.data['nodes'].append({"host": node, "port": 80, "name": str(node_count)})
 			node_count += 1
 		for cog in Path("cogs/").glob("*.py"):
 			try:
