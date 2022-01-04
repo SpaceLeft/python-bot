@@ -20,6 +20,20 @@ class bot(Bot):
 		super().__init__(command_prefix=when_mentioned_or(getenv('PREFIX')), intents=Intents.all(), activity=Activity(name="Loading...", type=3), allowed_mentions=self.mention, help_command=None)
 		self.log = logging.setup()
 		self.data = {'start': datetime.utcnow().timestamp(), 'rev': {}, 'user': 0, 'userbot':0, 'version': None}
+		self.data['password'] = getenv('PASSWORD')
+		address = get('https://raw.githubusercontent.com/akishoudayo/python-bot/master/address.txt').text.split('\n')
+		self.data['nodes'] = []
+		node_count = 1
+		for node in address:
+			self.data['nodes'].append({"host": node, "port": 80, "name": node_count})
+			node_count += 1
+		for cog in Path("cogs/").glob("*.py"):
+			try:
+				if disable.find(cog.stem) == -1:
+					self.load_extension("cogs." + cog.stem)
+					self.log(1, f"Loaded Extension ({cog.stem}.py)")
+			except Exception as e:
+				print_exc()
 		#self.slash = slash.setup(self)
 		
 	async def on_ready(self):
@@ -33,20 +47,6 @@ class bot(Bot):
 					user.append(member.id)
 		self.data['user'] = len(user)
 		self.log(1, 'Logged In Successful ({} Users)'.format(len(user)))
-		for cog in Path("cogs/").glob("*.py"):
-			try:
-				if disable.find(cog.stem) == -1:
-					self.load_extension("cogs." + cog.stem)
-					self.log(1, f"Loaded Extension ({cog.stem}.py)")
-			except Exception as e:
-				print_exc()
-		self.data['password'] = getenv('PASSWORD')
-		address = get('https://raw.githubusercontent.com/akishoudayo/python-bot/master/address.txt').text.split('\n')
-		self.data['nodes'] = []
-		node_count = 1
-		for node in address:
-			self.data['nodes'].append({"host": node, "port": 80, "name": node_count})
-			node_count += 1
 		self.add_listener(on_socket_response)
 		await self.change_presence(activity=Activity(name="{}help | {}".format(getenv('PREFIX'), self.data['version']), type=3))
 

@@ -97,22 +97,19 @@ class Status(Cog):
 		embed = Embed(title='Status', description=''.join(desc), colour=s.color1)
 		await message.edit(content=None, embed=embed)
 
-	@Cog.listener()
-	async def on_ready(self):
-		await self.bot.loop.run_in_executor(None, self.statusdisplay)
-		await self.bot.loop.run_in_executor(None, self.savedata)
-
-	async def savedata(self):
+	def savedata(self):
 		interval = 60
 		data = open('data/data.json', 'r').read()
 
-	async def statusdisplay(self):
+	@Cog.listener()
+	async def on_ready(self):
+		await self.bot.loop.run_in_executor(None, self.savedata)
 		interval = 2
 		channel = self.bot.get_channel(918558401812901888)
 		if self.bot.user.id == 907167351634542593:
-			ms = await channel.fetch_message(924555799311826944)
+			ms = await channel.fetch_message(928027610334777414)
 		if self.bot.user.id == 907531399433715752:
-			ms = await channel.fetch_message(924555934536171531)
+			ms = await channel.fetch_message(928027515505754154)
 		while True:
 			try:
 				await sleep(interval)
