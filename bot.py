@@ -1,10 +1,11 @@
 from pathlib import Path
 from discord import Embed, Activity, Intents, Status, AllowedMentions
 from discord.ext.commands import Bot, when_mentioned_or
-from datetime import timezone, timedelta
+from datetime import timedelta
 import settings as s
 from datetime import datetime
 from os import getenv
+from requests import get
 from lib import build, logging#, slash
 from traceback import print_exc
 
@@ -17,7 +18,6 @@ class bot(Bot):
 	def __init__(self):
 		self.mention = AllowedMentions(replied_user=False)
 		super().__init__(command_prefix=when_mentioned_or(getenv('PREFIX')), intents=Intents.all(), activity=Activity(name="Loading...", type=3), allowed_mentions=self.mention, help_command=None)
-		self.add_listener(on_socket_response)
 		self.log = logging.setup()
 		self.data = {'start': datetime.utcnow().timestamp(), 'rev': {}, 'user': 0, 'userbot':0, 'version': None}
 		#self.slash = slash.setup(self)
@@ -40,6 +40,12 @@ class bot(Bot):
 					self.log(1, f"Loaded Extension ({cog.stem}.py)")
 			except Exception as e:
 				print_exc()
+		self.data['password'] = getenv('PASSWORD')
+		address = get('https://raw.githubusercontent.com/akishoudayo/python-bot/master/address.txt').text.split('\n')
+		self.data['nodes'] = []
+		for node in address:
+			self.data['nodes'].append({"host": node, "port": 80, "name": "1"})
+		self.add_listener(on_socket_response)
 		await self.change_presence(activity=Activity(name="{}help | {}".format(getenv('PREFIX'), self.data['version']), type=3))
 
 if __name__ == "__main__":

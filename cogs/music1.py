@@ -278,7 +278,7 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
 
     @wavelink.WavelinkMixin.listener()
     async def on_node_ready(self, node):
-        self.bot.log(1, f"Wavelink : node{node.identifier} is ready.")
+        self.bot.log(1, f"Wavelink : node-{node.identifier} is ready.")
 
     @wavelink.WavelinkMixin.listener("on_track_stuck")
     @wavelink.WavelinkMixin.listener("on_track_end")
@@ -299,9 +299,9 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
     async def start_nodes(self):
         await self.bot.wait_until_ready()
 
-        for node in st.nodes.values():
+        for node in self.bot.data['nodes']:
             try:
-                await self.wavelink.initiate_node(host=node['host'], port=node['port'], rest_uri='http://{}:{}'.format(node['host'], node['port']), password=node['password'], identifier=node['name'], region=node['region'])
+                await self.wavelink.initiate_node(host=node['host'], port=node['port'], rest_uri='http://{}:{}'.format(node['host'], node['port']), password=self.bot.data['password'], identifier=node['name'], region='us')
                 self.bot.nodes = self.wavelink
             except Exception as e:
                 self.bot.log(2, e)
