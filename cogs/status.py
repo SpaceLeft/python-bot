@@ -99,6 +99,14 @@ class Status(Cog):
 
 	@Cog.listener()
 	async def on_ready(self):
+		await self.bot.loop.run_in_executor(None, self.statusdisplay)
+		await self.bot.loop.run_in_executor(None, self.savedata)
+
+	async def savedata(self):
+		interval = 60
+		data = open('data/data.json', 'r').read()
+
+	async def statusdisplay(self):
 		interval = 2
 		channel = self.bot.get_channel(918558401812901888)
 		if self.bot.user.id == 907167351634542593:

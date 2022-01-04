@@ -46,12 +46,14 @@ class Game(Cog):
 
 	@command(aliases=['rev', 're', 'reversetranslate'])
 	async def reversetranslation(self, ctx: Context, arg: int, *, args: str):
+		if len(self.bot.data['rev']) >= 20:
+			await ctx.reply('Thread Count Reached Limit. Try again later.')
 		embed = Embed(title='逆翻訳しています...', colour=s.color1, timestamp=d.utcnow())
 		embed.add_field(name='進行状況', value='0/{} (0.0%)'.format(arg), inline=False)
 		embed.add_field(name='予想残り時間', value='計算中', inline=False)
 		message = await ctx.reply(embed=embed, mention_author=False)
 		for n in range(1, 4):
-			num = str(randint(1, 9999))
+			num = len(self.bot.data['rev'])+1
 			self.bot.data['rev'][num] = {'duration': None, 'progress': 0, 'result': None}
 			self.bot.log(1, self.bot.data['rev'])
 			try:

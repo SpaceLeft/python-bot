@@ -5,8 +5,10 @@ import settings as s
 from re import sub
 from lib import data
 from sys import exc_info
+from requests import post
 from datetime import datetime as d, timedelta
 from platform import python_version, platform
+import aiohttp
 
 
 class Help(Cog):
@@ -14,10 +16,12 @@ class Help(Cog):
         self.bot = bot
         self.bot.data['modules'] = ['discord(discord.py)', 'PyNaCl', 'youtube_dl', 'requests', 'asyncio',
                         'discord-py-slash-command', 'discord-py-interactions', 'flask', 'wavelink', 'base64',
-                        'platform', 'random', 'sys', 'os', 'functools', 'ast', 'subprocess', 're', 'datetime', 'time']
-        self.bot.data['commands'] = ['random', 'choice', 'say', 'help', 'servercheck', 'play', 'omikuji', 'info', 'ping', 'reversetranslate', 'translate',
-                         'status', 'seek', 'queue', 'skip', 'volume', 'bassboost', 'eq', 'nowplaying', 'repeat',
-                         'shuffle', 'support', 'invite', 'join', 'leave']
+                        'platform', 'random', 'sys', 'os', 'functools', 'ast', 'subprocess', 're', 'datetime',
+                        'time', 'lavalink', 'psutil', 'threading', 'json']
+        self.bot.data['commands'] = ['random', 'choice', 'say', 'help', 'servercheck', 'play', 'omikuji', 'info',
+                        'ping', 'reversetranslate', 'translate', 'status', 'seek', 'queue', 'skip', 'volume',
+                        'bassboost', 'eq', 'nowplaying', 'repeat',  'shuffle', 'support', 'invite', 'join',
+                        'leave']
 
 
     @command(aliases=['info'])
@@ -43,7 +47,7 @@ class Help(Cog):
         embed.add_field(name="Number of Builds", value=open('data/builds.txt', 'r', encoding='utf_8').read(), inline=False)
         embed.add_field(name="Uptime", value=timedelta(seconds=int(d.utcnow().timestamp() - self.bot.data['start'])), inline=False)
         embed.add_field(name="Language", value="English, Japanese", inline=False)
-        embed.add_field(name="Official Site", value="https://akishoudayo.herokuapp.com/", inline=False)
+        embed.add_field(name="Official Site", value="https://akishoudayo.localinfo.jp", inline=False)
         await ctx.send(embed=embed)
 
 
@@ -94,10 +98,70 @@ class Help(Cog):
 
 
     @command(aliases=[])
+    async def report(self, ctx: Context, arg=None):
+        if not arg:
+            await ctx.send('Usage : c.report <content>')
+        else:
+            await self.bot.get_user(897030094290321468).send('Report | {} ({}) : {}'.format(ctx.author.name, ctx.author.id, arg))
+            await ctx.send('Thanks for reporting!\nWe will see your message in around 2 days.')
+
+    @command(aliases=[])
+    async def request(self, ctx: Context, arg=None):
+        if not arg:
+            await ctx.send('Usage : c.request <content>')
+        else:
+            await self.bot.get_user(897030094290321468).send('Request | {} ({}) : {}'.format(ctx.author.name, ctx.author.id, arg))
+            await ctx.send('Thanks for requesting!\nWe will see your message in around 2 days.')
+
+    @command(aliases=[])
+    async def support(self, ctx: Context):
+        json = {
+            "content": "Want to Help?",
+            "components": [{
+                "type": 1,
+                "components": [{
+                    "type": 2,
+                    "label": "Click Here!",
+                    "style": 5,
+                    "url": "https://akishoudayo.localinfo.jp/pages/5686870/support"
+                }]
+            }]
+        }
+        self.bot.log(1, post(self.url(ctx.channel.id), headers=self.bot.data['headers'], json=json).json())
+
+    @command(aliases=[])
+    async def invite(self, ctx: Context):
+        json = {
+            "content": "Thanks for inviting!",
+            "components": [{
+                "type": 1,
+                "components": [{
+                    "type": 2,
+                    "label": "Click Here!",
+                    "style": 5,
+                    "url": "https://discord.com/api/oauth2/authorize?client_id=907167351634542593&permissions=8&scope=bot+applications.commands"
+                }]
+            }]
+        }
+        self.bot.log(1, post(self.url(ctx.channel.id), headers=self.bot.data['headers'], json=json).json())
+    def url(self, id):
+        return f"https://discordapp.com/api/channels/{id}/messages"
+
+    async def notify_callback(self, id, token):
+        url = "https://discord.com/api/v8/interactions/{0}/{1}/callback".format(id, token)
+        json = {
+            "type": 6
+        }
+        async with aiohttp.ClientSession() as s:
+            async with s.post(url, json=json) as r:
+                if 200 <= r.status < 300:
+                    return
+
+    @command(aliases=[])
     async def help(self, ctx: Context, arg=None):
         if not arg:
             embed = Embed(title="Command List", description='Prefix : `c.`', color=0x00ffff, timestamp=d.utcnow())
-            embed.add_field(name='Support/Help', value='~~`support`~~,~~`invite`~~,`help`,~~`about`~~,~~`report`~~,~~`request`~~', inline=False)
+            embed.add_field(name='Support/Help', value='`support`,`invite`,`help`,~~`about`~~,report`,`request`', inline=False)
             #,`bassboost(beta)`,`remove`
             embed.add_field(name='Music',value='`play`,`nowplaying`,`volume`,`queue`,`skip`,`shuffle`,`join`,`leave`,`seek`,`search`',inline=False)
             embed.add_field(name='Fun', value='~~`random`~~,~~`say`~~,~~`choice`~~,`reversetranslate`,`omikuji`', inline=False)

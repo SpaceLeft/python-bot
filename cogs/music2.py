@@ -646,13 +646,10 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
     aa = '''@commands.command(name="restart")
     async def restart_command(self, ctx):
         player = self.get_player(ctx)
-
         if player.queue.is_empty:
             raise QueueIsEmpty
-
         await player.seek(0)
         await ctx.send("Track restarted.")
-
     @restart_command.error
     async def restart_command_error(self, ctx, exc):
         if isinstance(exc, QueueIsEmpty):
