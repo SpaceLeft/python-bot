@@ -43,8 +43,10 @@ class bot(Bot):
 		self.data['password'] = getenv('PASSWORD')
 		address = get('https://raw.githubusercontent.com/akishoudayo/python-bot/master/address.txt').text.split('\n')
 		self.data['nodes'] = []
+		node_count = 1
 		for node in address:
-			self.data['nodes'].append({"host": node, "port": 80, "name": "1"})
+			self.data['nodes'].append({"host": node, "port": 80, "name": node_count})
+			node_count += 1
 		self.add_listener(on_socket_response)
 		await self.change_presence(activity=Activity(name="{}help | {}".format(getenv('PREFIX'), self.data['version']), type=3))
 
