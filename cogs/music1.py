@@ -486,7 +486,7 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         if isinstance(exc, QueueIsEmpty):
             raise commands.CommandError("The queue could not be shuffled as it is currently empty.")
 
-    @commands.command(name="repeat")
+    @commands.command(name="repeat", aliases=['loop'])
     async def repeat_command(self, ctx, mode: str):
         if mode not in ("off", "single", "queue"):
             raise commands.CommandError("Modes : `off`/`single`/`queue`")
@@ -496,7 +496,7 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         if mode == 'single':
             await ctx.send(f":repeat_one: Successfully repeat mode set to single.")
         if mode == 'queue':
-            await ctx.send(f":repeat: Successfully repeat mode set to single.")
+            await ctx.send(f":repeat: Successfully repeat mode set to queue.")
         if mode == 'off':
             await ctx.send(f":arrow_forward: Successfully repeat mode set to off")
         self.bot.data['smessages'] += 1
