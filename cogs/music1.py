@@ -317,23 +317,23 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
     async def connect_command(self, ctx, *, channel: t.Optional[discord.VoiceChannel]):
         player = self.get_player(ctx)
         channel = await player.connect(ctx, channel)
-        await ctx.send(f":white_check_mark: Connected to {channel.name}.")
+        await ctx.send(f":white_check_mark: **Connected to {channel.name}.**")
         self.bot.data['smessages'] += 1
 
     @connect_command.error
     async def connect_command_error(self, ctx, exc):
         if isinstance(exc, AlreadyConnectedToChannel):
-            await ctx.send("Already connected to a voice channel.")
+            await ctx.send(":x: **Already connected to a voice channel.**")
             self.bot.data['smessages'] += 1
         elif isinstance(exc, NoVoiceChannel):
-            await ctx.send("No suitable voice channel was provided.")
+            await ctx.send(":x: **No suitable voice channel was provided.**")
             self.bot.data['smessages'] += 1
 
     @commands.command(name="disconnect", aliases=["leave", "dc", "l", "d"])
     async def disconnect_command(self, ctx):
         player = self.get_player(ctx)
         await player.teardown()
-        await ctx.send("Disconnected.")
+        await ctx.send(":white_check_mark: **Disconnected.**")
         self.bot.data['smessages'] += 1
 
     @commands.command(name="play", aliases=["p"])
@@ -349,7 +349,7 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
                 raise QueueIsEmpty
 
             await player.set_pause(False)
-            await ctx.send(":play_pause: Playback resumed.")
+            await ctx.send(":play_pause: **Playback resumed.**")
             self.bot.data['smessages'] += 1
 
         else:
@@ -506,40 +506,41 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         if not page:
             raise commands.CommandError("Invaild page.")
         player = self.get_player(ctx)
-
         if player.queue.is_empty:
             raise commands.CommandError("The queue is currently empty.")
-
-        embed = discord.Embed(
-            title="Queue",
-            description=f"Showing up to next {show} tracks",
-            colour=ctx.author.colour,
-            timestamp=dt.datetime.utcnow()
-        )
-        embed.set_author(name="Query Results")
-        embed.set_footer(text=f"Requested by {ctx.author.display_name}", icon_url=ctx.author.avatar_url)
-        embed.add_field(
-            name="Currently playing",
-            value=getattr(player.queue.current_track, "title", "No tracks currently playing."),
-            inline=False
-        )
-        if upcoming := player.queue.upcoming:
-            embed.add_field(
-                name="Next up",
-                value="\n".join(t.title for t in upcoming[:show]),
-                inline=False
-            )
-
-        msg = await ctx.send(embed=embed)
-        self.bot.data['smessages'] += 1@commands.command(name="queue", aliases=["q"])
+        if not page * 10 <= ((len(player.queue.upcoming)/10)+1) * 10:
+            raise commands.CommandError("Invaild page.")
+        queues = player.queue.upcoming
+        queue = []
+        for n in range(page*10-10, page*10):
+            try:
+                queue.append('{} : [{}]({})'.format(n+1, queues[n].title, queues[n].uri))
+            except:
+                break
+        if not player.queue.upcoming:
+            embed = discord.Embed(title="Queue",
+                                  description="**Now Playing** : [{}]({})".format(player.queue.current_track.title, player.queue.current_track.uri),
+                                  colour=ctx.author.colour,
+                                  timestamp=dt.datetime.utcnow())
+        else:
+            embed = discord.Embed(title="Queue",
+                                  description="**Now Playing** : [{}]({})\n\n{}".format(player.queue.current_track.title, player.queue.current_track.uri, '\n'.join(queue)),
+                                  colour=ctx.author.colour,
+                                  timestamp=dt.datetime.utcnow())
+        embed.set_footer(text=f"Page {page}/{int(len(player.queue.upcoming)/10)+1}")
+        await ctx.send(embed=embed)
+        self.bot.data['smessages'] += 1
 
     @commands.command(name="remove", aliases=["r"])
-    async def queue_command(self, ctx, value: int):
+    async def remove_command(self, ctx, value: int):
+        player = self.get_player(ctx)
+        if player.queue.is_empty:
+            raise commands.CommandError("The queue is currently empty.")
         try:
-            del player.queue.upcoming[value-1]
+            del player.queue._queue[value-1]
             await ctx.send(':white_check_mark: Successfully Deleted')
-        except:
-            await ctx.send(embed=embed)
+        except Exception as e:
+            raise commands.CommandError(e)
         self.bot.data['smessages'] += 1
 
     # Requests -----------------------------------------------------------------
