@@ -48,10 +48,13 @@ class Game(Cog):
 	async def reversetranslation(self, ctx: Context, arg: int, *, args: str):
 		if len(self.bot.data['rev']) >= 20:
 			await ctx.reply('Thread Count Reached Limit. Try again later.')
+			self.bot.data['smessages'] += 1
+			return
 		embed = Embed(title='逆翻訳しています...', colour=s.color1, timestamp=d.utcnow())
 		embed.add_field(name='進行状況', value='0/{} (0.0%)'.format(arg), inline=False)
 		embed.add_field(name='予想残り時間', value='計算中', inline=False)
 		message = await ctx.reply(embed=embed, mention_author=False)
+		self.bot.data['smessages'] += 1
 		for n in range(1, 4):
 			num = len(self.bot.data['rev'])+1
 			self.bot.data['rev'][num] = {'duration': None, 'progress': 0, 'result': None}
@@ -103,13 +106,16 @@ class Game(Cog):
 				finalize2.append('{}. {}\n'.format(n+1, self.bot.data['rev'][num]['result'][n]))
 			else:
 				await ctx.reply(content='Error : The result is over 8000 characters.')
+				self.bot.data['smessages'] += 1
 				return
 		del self.bot.data['rev'][num]
 		embed = Embed(title='Result', description=''.join(finalize), colour=0x7ED6DE, timestamp=d.utcnow())
 		await ctx.reply(embed=embed, mention_author=False)
+		self.bot.data['smessages'] += 1
 		if len(finalize2) != 0:
 			embed2 = Embed(title='Result', description=''.join(finalize2)[:-1], colour=0x7ED6DE, timestamp=d.utcnow())
 			await ctx.send(embed=embed2)
+			self.bot.data['smessages'] += 1
 
 	@command(aliases=[])
 	async def omikuji(self, ctx: Context):
@@ -140,18 +146,22 @@ class Game(Cog):
 			result = omikuji[3]
 		embed = Embed(title='おみくじ', description='{}の結果\n\n`{}`'.format(now.strftime('%Y/%m/%d'), result), colour=s.color1, timestamp=d.utcnow())
 		await ctx.send(embed=embed)
+		self.bot.data['smessages'] += 1
 
 	@command(aliases=[])
 	async def say(self, ctx: Context, arg):
 		await ctx.send(arg)
+		self.bot.data['smessages'] += 1
 
 	@command(aliases=['randint'])
 	async def random(self, ctx: Context, start:int, end:int):
 		await ctx.send(str(randint(start,end)))
+		self.bot.data['smessages'] += 1
 
 	@command(aliases=['pick'])
 	async def choice(self, ctx: Context, *, arg:str):
 		await ctx.send(str(choice(arg.split(' '))))
+		self.bot.data['smessages'] += 1
 
 def setup(bot: Bot):
     bot.add_cog(Game(bot))

@@ -8,6 +8,7 @@ class Translator(Cog):
 	@command(aliases=['t','trans','translate'])
 	async def translator(self, ctx: Context, *, args):
 		message = await ctx.reply('翻訳しています...', mention_author=False)
+		self.bot.data['smessages'] += 1
 		arg = args.split(' ')
 		if arg[0].find('>') != -1:
 			lang = arg[0].split('>')

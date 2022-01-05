@@ -23,6 +23,7 @@ class Update(Cog):
 			embed.add_field(name='Coming soon...', value=self.bot.log2[:-1], inline=False)
 			embed.set_footet(text=info)
 			await self.bot.get_channel(885764049357381672).send(embed=embed)
+			self.bot.data['smessages'] += 1
 
 def setup(bot: Bot):
     bot.add_cog(Update(bot))

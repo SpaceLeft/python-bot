@@ -7,6 +7,7 @@ from asyncio import sleep
 from datetime import datetime, timedelta
 from discord_slash import cog_ext, SlashContext
 import psutil
+from platform import python_version, platform
 from threading import active_count
 
 class Status(Cog):
@@ -18,6 +19,7 @@ class Status(Cog):
 	async def _ping(self, ctx: SlashContext):
 		before = datetime.now()
 		message = await ctx.send('Pong!')
+		self.bot.data['smessages'] += 1
 		after = datetime.now()
 		response = post('https://discord.com/api/oauth2/authorize', timeout=3)
 		embed = Embed(title='Ping', colour=data.color1)
@@ -31,6 +33,7 @@ class Status(Cog):
 		desc= ['**Main : :green_square: Online**\n', '**[Web](https://akishoudayo.herokuapp.com/) : :black_large_square: Checking...**\n', '**[Music-1](https://commandnetworkmusic1.herokuapp.com/) : :black_large_square: Checking...**\n',  '**[Music-2](https://commandnetworkmusic2.herokuapp.com/) : :black_large_square: Checking...**\n',  '**[Music-3](https://commandnetworkmusic3.herokuapp.com/) : :black_large_square: Checking...**\n',  '**[Music-4](https://commandnetworkmusic4.herokuapp.com/) : :black_large_square: Checking...**\n',  '**[Music-5](https://commandnetworkmusic5.herokuapp.com/) : :black_large_square: Checking...**\n',  '**[Music-6](https://commandnetworkmusic6.herokuapp.com/) : :black_large_square: Checking...**\n',  '**[Music-7](https://commandnetworkmusic7.herokuapp.com/) : :black_large_square: Checking...**\n', '**[Discord API](https://discord.com/api/oauth2/authorize?client_id=761929481421979669&permissions=8&response_type=code&scope=bot%20applications.commands) : :black_large_square: Checking...**\n', '**[mcsrvstat.us](https://api.mcsrvstat.us) : :black_large_square: Checking...**']
 		embed = Embed(title='Status', description=''.join(desc), colour=s.color1)
 		message = await ctx.send(embed=embed)
+		self.bot.data['smessages'] += 1
 		response = post('https://akishoudayo.herokuapp.com/', timeout=3)#405on 503off
 		if response.status_code == 503:
 			desc[1] = '**[Web](https://akishoudayo.herokuapp.com/) : :red_square: Offline**\n'
@@ -102,6 +105,10 @@ class Status(Cog):
 		data = open('data/data.json', 'r').read()
 
 	@Cog.listener()
+	async def on_message(self, message):
+		self.bot.data['rmessages'] += 1
+
+	@Cog.listener()
 	async def on_ready(self):
 		await self.bot.loop.run_in_executor(None, self.savedata)
 		interval = 2
@@ -135,15 +142,29 @@ class Status(Cog):
 					except Exception as e:
 						self.bot.log(4, e)
 						downnodes.append(node)
-				embed.add_field(name='Ping', value='**Client** : {:.2f}ms\n**WebSocket** : {:.2f}ms'.format(self.bot.latency*1000, post('https://discord.com/api/oauth2/authorize', timeout=3).elapsed.total_seconds()*1000), inline=False)
+				embed.add_field(name='Ping', value='**Client** : {:.2f}ms\n**WebSocket** : {:.2f}ms'.format(self.bot.latency*1000, post('https://discord.com/api/v6', timeout=3).elapsed.total_seconds()*1000), inline=False)
 				embed.add_field(name='Version', value='{} ({})'.format(self.bot.log3[:-1], open('data/builds.txt', 'r', encoding='utf_8').read()), inline=False)
-				embed.add_field(name='Nodes', value='{}/3 ( eu:{} | us:{} )'.format(nodes, eu, us), inline=False)
+				embed.add_field(name='Nodes', value='{}/{}'.format(nodes, len(self.nodes)), inline=False)
 				embed.add_field(name='Players', value='{}'.format(len(players)), inline=False)
 				embed.add_field(name='Threads (ReverseTranslation)', value='{} ({})'.format(active_count(), len(self.bot.data['rev'])), inline=False)
 				embed.add_field(name='Errors', value='Coming soon...', inline=False)
 				if downnodes:
 					embed.add_field(name='Down Nodes', value='`{}`'.format('`,`'.join(downnodes)), inline=False)
-				#embed.add_field(name='Nodes', value='{}/12'.format(nodes), inline=False)
+				embed.add_field(name='Message', value='↑{} ↓{}'.format(self.bot.data['smessages'], self.bot.data['rmessages']), inline=False)
+				embed.add_field(name='Environment', value='Python {}, Java 13'.format(python_version()), inline=False)
+				temp = platform(terse=False).split('-')
+				embed.add_field(name='System', value='{} {} ({})'.format(temp[0], temp[1], '-'.join(temp[2:])), inline=False)
+				embed.add_field(name="Guilds", value=str(len(self.bot.guilds)), inline=False)
+				user_count = []
+				user_bot_count = []
+				for guild in self.bot.guilds:
+					for member in guild.members:
+						user_bot_count.append(member.id)
+						if not member.bot:
+							user_count.append(member.id)
+				self.bot.data['user'] = len(user_count)
+				self.bot.data['userbot'] = len(user_bot_count)
+				embed.add_field(name='Users (All)', value='{} ({})'.format(self.bot.data['user'], self.bot.data['userbot']), inline=False)
 				embed.add_field(name='CPU Usage', value='{:.1f}%'.format(psutil.cpu_percent()), inline=False)
 				embed.add_field(name='Memory Usage', value='{:.1f}GB / {:.1f}GB ({}%)'.format(psutil.virtual_memory().used / 1024 / 1024 / 1024, psutil.virtual_memory().total / 1024 / 1024 / 1024, psutil.virtual_memory().percent), inline=False)
 				try:
@@ -185,6 +206,7 @@ class Status(Cog):
 		embed.add_field(name='Client', value='{:.2f}ms'.format(self.bot.latency*1000), inline=False)
 		embed.add_field(name='API', value='{:.2f}ms'.format(response.elapsed.total_seconds()*1000), inline=False)
 		await message.edit(content=None, embed=embed)
+		self.bot.data['smessages'] += 1
 
 def setup(bot: Bot):
     bot.add_cog(Status(bot))

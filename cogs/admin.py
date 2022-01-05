@@ -46,6 +46,7 @@ class Admin(Cog, command_attrs=dict(hidden=True)):
                 if type(result) == bytes:
                     result = result.decode()
                 await ctx.send(f'```python\n{result}\n```')
+                self.bot.data['smessages'] += 1
         except Exception as e:
             raise CommandError('Error : {}'.format(e))
 
@@ -53,33 +54,40 @@ class Admin(Cog, command_attrs=dict(hidden=True)):
     async def restart(self, ctx: Context):
         delete('https://api.heroku.com/apps/akishoudayo-bot/dynos', headers={"Accept": "application/vnd.heroku+json; version=3", "Authorization": "Bearer {}".format(getenv('API_KEY'))})
         await ctx.send('Successfully Restarted')
+        self.bot.data['smessages'] += 1
 
     @cog_ext.cog_slash(name="load", guild_ids=s.guild)
     async def _load(self, ctx: SlashContext, cog: str):
         try:
             self.bot.reload_extension("cogs." + cog)
             await ctx.send(content=f"Loaded Extension: {cog}.py")
+            self.bot.data['smessages'] += 1
         except Exception as e:
             self.bot.log(4, e)
             await ctx.send(content=f"Failed to Load Extension: {cog}.py")
+            self.bot.data['smessages'] += 1
 
     @cog_ext.cog_slash(name="unload", guild_ids=s.guild)
     async def _unload(self, ctx: SlashContext, cog: str):
         try:
             self.bot.reload_extension("cogs." + cog)
             await ctx.send(content=f"Unloaded Extension: {cog}.py")
+            self.bot.data['smessages'] += 1
         except Exception as e:
             self.bot.log(4, e)
             await ctx.send(content=f"Failed to Unpoad Extension: {cog}.py")
+            self.bot.data['smessages'] += 1
 
     @cog_ext.cog_slash(name="reload", guild_ids=s.guild)
     async def _reload(self, ctx: SlashContext, cog: str):
         try:
             self.bot.reload_extension("cogs." + cog)
             await ctx.send(content=f"Reloaded Extension: {cog}.py")
+            self.bot.data['smessages'] += 1
         except Exception as e:
             self.bot.log(4, e)
             await ctx.send(content=f"Failed to Reload Extension: {cog}.py")
+            self.bot.data['smessages'] += 1
 
     async def cog_check(self, ctx: Context):
         if await ctx.bot.is_owner(ctx.author):
@@ -87,6 +95,7 @@ class Admin(Cog, command_attrs=dict(hidden=True)):
         if self.admin.find(str(ctx.author.id)) != -1:
             return True
         await ctx.reply("You cannot run this command.")
+        self.bot.data['smessages'] += 1
         return False
 
     @command(name="load")
@@ -94,27 +103,33 @@ class Admin(Cog, command_attrs=dict(hidden=True)):
         try:
             self.bot.load_extension("cogs." + cog)
             await ctx.reply(f"Loaded Extension: {cog}.py", mention_author=False)
+            self.bot.data['smessages'] += 1
         except Exception as e:
             self.bot.log(4, e)
             await ctx.reply(f"Failed to Load Extension: {cog}.py", mention_author=False)
+            self.bot.data['smessages'] += 1
 
     @command(name="unload")
     async def unload_cog(self, ctx: Context, *, cog: str):
         try:
             self.bot.unload_extension("cogs." + cog)
             await ctx.reply(f"Unloaded Extension: {cog}.py", mention_author=False)
+            self.bot.data['smessages'] += 1
         except Exception as e:
             self.bot.log(4, e)
             await ctx.reply(f"Failed to Unload Extension: {cog}.py", mention_author=False)
+            self.bot.data['smessages'] += 1
 
     @command(name="reload")
     async def reload_cog(self, ctx: Context, *, cog: str):
         try:
             self.bot.reload_extension("cogs." + cog)
             await ctx.reply(f"Reloaded Extension: {cog}.py", mention_author=False)
+            self.bot.data['smessages'] += 1
         except Exception as e:
             self.bot.log(4, e)
             await ctx.reply(f"Failed to Reload Extension: {cog}.py", mention_author=False)
+            self.bot.data['smessages'] += 1
 
 
 def setup(bot: Bot):

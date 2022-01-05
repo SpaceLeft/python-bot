@@ -54,6 +54,7 @@ class Minecraft(Cog):
 				embed.add_field(name='Direct IP', value='{}:{}'.format(data['ip'], data['port']), inline=False)
 			embed.set_footer(text='Powered by mcsrvstats.us')
 			await ctx.send(embed=embed)
+			self.bot.data['smessages'] += 1
 
 def setup(bot: Bot):
     bot.add_cog(Minecraft(bot))

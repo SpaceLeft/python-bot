@@ -66,6 +66,7 @@ class Help(Cog):
         if isinstance(error, CommandError):
             embed = Embed(title='Error', description=value, color=data.color4)
             await ctx.send(embed=embed)
+            self.bot.data['smessages'] += 1
             return
         if isinstance(error, BotMissingPermissions):
             missing = [perm.replace('_', ' ').replace('guild', 'server').title() for perm in error.missing_perms]
@@ -74,9 +75,11 @@ class Help(Cog):
             else:
                 fmt = ' and '.join(missing)
             await ctx.send('I need the **{}** permission(s) to run this command.'.format(fmt))
+            self.bot.data['smessages'] += 1
             return
         if isinstance(error, CommandOnCooldown):
             await ctx.send("This command is on cooldown. Please retry in {}s.".format(math.ceil(error.retry_after)))
+            self.bot.data['smessages'] += 1
             return
         if isinstance(error, MissingPermissions):
             missing = [perm.replace('_', ' ').replace('guild', 'server').title() for perm in error.missing_perms]
@@ -85,14 +88,17 @@ class Help(Cog):
             else:
                 fmt = ' and '.join(missing)
             await ctx.send('You need the **{}** permission(s) to use this command.'.format(fmt))
+            self.bot.data['smessages'] += 1
             return
         if isinstance(error, UserInputError):
             embed = Embed(title='Error', description=value, color=data.color4)
             await ctx.send(embed=embed)
+            self.bot.data['smessages'] += 1
             return
         if isinstance(error, NoPrivateMessage):
             try:
                 await ctx.author.send('This command cannot be used in direct messages.')
+                self.bot.data['smessages'] += 1
             except discord.Forbidden:
                 pass
 
@@ -101,17 +107,21 @@ class Help(Cog):
     async def report(self, ctx: Context, arg=None):
         if not arg:
             await ctx.send('Usage : c.report <content>')
+            self.bot.data['smessages'] += 1
         else:
             await self.bot.get_user(897030094290321468).send('Report | {} ({}) : {}'.format(ctx.author.name, ctx.author.id, arg))
             await ctx.send('Thanks for reporting!\nWe will see your message in around 2 days.')
+            self.bot.data['smessages'] += 1
 
     @command(aliases=[])
     async def request(self, ctx: Context, arg=None):
         if not arg:
             await ctx.send('Usage : c.request <content>')
+            self.bot.data['smessages'] += 1
         else:
             await self.bot.get_user(897030094290321468).send('Request | {} ({}) : {}'.format(ctx.author.name, ctx.author.id, arg))
             await ctx.send('Thanks for requesting!\nWe will see your message in around 2 days.')
+            self.bot.data['smessages'] += 1
 
     @command(aliases=[])
     async def support(self, ctx: Context):
@@ -128,6 +138,7 @@ class Help(Cog):
             }]
         }
         self.bot.log(1, post(self.url(ctx.channel.id), headers=self.bot.data['headers'], json=json).json())
+        self.bot.data['smessages'] += 1
 
     @command(aliases=[])
     async def invite(self, ctx: Context):
@@ -144,6 +155,8 @@ class Help(Cog):
             }]
         }
         self.bot.log(1, post(self.url(ctx.channel.id), headers=self.bot.data['headers'], json=json).json())
+        self.bot.data['smessages'] += 1
+
     def url(self, id):
         return f"https://discordapp.com/api/channels/{id}/messages"
 
@@ -161,7 +174,7 @@ class Help(Cog):
     async def help(self, ctx: Context, arg=None):
         if not arg:
             embed = Embed(title="Command List", description='Prefix : `c.`', color=0x00ffff, timestamp=d.utcnow())
-            embed.add_field(name='Support/Help', value='`support`,`invite`,`help`,~~`about`~~,report`,`request`', inline=False)
+            embed.add_field(name='Support/Help', value='`support`,`invite`,`help`,~~`about`~~,`report`,`request`', inline=False)
             #,`bassboost(beta)`,`remove`
             embed.add_field(name='Music',value='`play`,`nowplaying`,`volume`,`queue`,`skip`,`shuffle`,`join`,`leave`,`seek`,`search`',inline=False)
             embed.add_field(name='Fun', value='~~`random`~~,~~`say`~~,~~`choice`~~,`reversetranslate`,`omikuji`', inline=False)
@@ -171,6 +184,7 @@ class Help(Cog):
             embed.add_field(name='Status', value='`ping`,~~`status`~~,`information`', inline=False)
             #embed.set_footer(text='More help : c.help <command>')
             await ctx.send(embed=embed)
+            self.bot.data['smessages'] += 1
 
 
 def setup(bot: Bot):
