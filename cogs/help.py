@@ -176,8 +176,8 @@ class Help(Cog):
             embed = Embed(title="Command List", description='Prefix : `c.`', color=0x00ffff, timestamp=d.utcnow())
             embed.add_field(name='Support/Help', value='`support`,`invite`,`help`,~~`about`~~,`report`,`request`', inline=False)
             #,`bassboost(beta)`,`remove`
-            embed.add_field(name='Music',value='`play`,`nowplaying`,`volume`,`queue`,`skip`,`shuffle`,`join`,`leave`,`seek`,`search`',inline=False)
-            embed.add_field(name='Fun', value='~~`random`~~,~~`say`~~,~~`choice`~~,`reversetranslate`,`omikuji`', inline=False)
+            embed.add_field(name='Music',value='`play`,`nowplaying`,`volume`,`queue`,`skip`,`skipto`,`eq`,`adveq`,`shuffle`,`join`,`leave`,`seek`,`search`,`bass`,`treble`,`repeat`,`previous`,`pause`,`resume`,`stop`',inline=False)
+            embed.add_field(name='Fun', value='`random`,`say`,`choice`,`reversetranslate`,`omikuji`', inline=False)
             embed.add_field(name='Tool', value='~~`googlesearch`~~,~~`timer`~~,`servercheck`,~~`time`~~,~~`downloader`~~,`translator`,~~`uploader`~~',inline=False)
             if ctx.author.id == 749013126866927713 or ctx.author.id == 897030094290321468:
                 embed.add_field(name='Admin', value='`reload`,`load`,`unload`,`eval`')

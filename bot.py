@@ -13,7 +13,7 @@ async def on_socket_response(msg):
 	if msg["t"] != "INTERACTION_CREATE":
 		return
 
-disable = 'music2'
+disable = ''
 class bot(Bot):
 	def __init__(self):
 		self.mention = AllowedMentions(replied_user=False)
