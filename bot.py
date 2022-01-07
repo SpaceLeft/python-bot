@@ -19,6 +19,8 @@ class bot(Bot):
 		self.data = {'start': datetime.utcnow().timestamp(), 'rev': {}, 'user': 0, 'userbot':0, 'version': None, 'smessages':0, 'rmessages': 0}
 		self.data['password'] = getenv('PASSWORD')
 		self.data['address'] = get('https://raw.githubusercontent.com/akishoudayo/python-bot/master/address.txt').text.split('\n')
+		print('\n'.join(self.data['address']))
+		print(open('address.txt', 'r').read())
 		self.data['nodes'] = []
 		node_count = 1
 		for node in self.data['address']:

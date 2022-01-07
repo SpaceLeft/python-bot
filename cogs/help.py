@@ -32,7 +32,7 @@ class Help(Cog):
     async def information(self, ctx: Context, arg=None):
         embed = Embed(title='Information', colour=data.color1)
         embed.add_field(name='Version', value=self.bot.log3[:-1], inline=False)
-        embed.add_field(name='Environment', value='Python {}, Java 11'.format(python_version()), inline=False)
+        embed.add_field(name='Environment', value='Python {}, Java 13'.format(python_version()), inline=False)
         temp = platform(terse=False).split('-')
         embed.add_field(name='System', value='{} {}({})'.format(temp[0], temp[1], '-'.join(temp[2:])), inline=False)
         embed.add_field(name="Number of Commands", value=str(len(self.bot.data['commands'])), inline=False)
