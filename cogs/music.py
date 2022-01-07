@@ -159,7 +159,7 @@ class Player(wavelink.Player):
         if (channel := getattr(ctx.author.voice, "channel", channel)) is None:
             raise NoVoiceChannel
 
-        await super().connect(channel.id)
+        await super().connect(channel.id, self_deaf=True)
         return channel
 
     async def teardown(self):
@@ -270,7 +270,7 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
 
         for node in self.bot.data['nodes']:
             try:
-                await self.wavelink.initiate_node(host=node['host'], port=node['port'], rest_uri='http://{}:{}'.format(node['host'], node['port']), password=self.bot.data['password'], identifier=node['name'], region='us')
+                await self.wavelink.initiate_node(host=node['host'], port=node['port'], rest_uri='http://{}:{}'.format(node['host'], node['port']), password=self.bot.data['password'], identifier=node['name'], region='us', heartbeat=5)
                 self.bot.nodes = self.wavelink
             except Exception as e:
                 self.bot.log(2, e)
@@ -319,7 +319,6 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         player = self.get_player(ctx)
 
         if not player.is_connected:
-            await ctx.guild.change_voice_state(channel=ctx.author.voice.channel, self_deaf=True, self_mute=False)
             await player.connect(ctx)
 
         if query is None:
@@ -715,8 +714,10 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         embed.set_footer(text=f"Requested by {ctx.author.display_name}", icon_url=ctx.author.avatar_url)
         embed.add_field(name="Title", value=f'[{player.queue.current_track.title}]({player.queue.current_track.uri})', inline=False)
         embed.add_field(name="Uploader", value=player.queue.current_track.author, inline=False)
-        embed.set_thumbnail(url=player.queue.current_track.thumb)
-
+        try:
+            embed.set_thumbnail(url=f'https://img.youtube.com/vi/{player.queue.current_track.ytid}/hqdefault.jpg')
+        except:
+            pass
         position = divmod(player.position, 60000)
         length = divmod(player.queue.current_track.length, 60000)
         embed.add_field(

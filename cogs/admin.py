@@ -22,7 +22,7 @@ class Admin(Cog, command_attrs=dict(hidden=True)):
 
     @command()
     async def eval(self, ctx: Context, types : str, *, arg: str):
-        args = {"import":  __import__, "client": self.bot, "self": self.bot, "bot": self.bot, "ctx": ctx}
+        args = {"import":  __import__, "client": self.bot, "self": self, "ctx": ctx}
         if arg.find('```') != -1:
             if arg.find('```python') != -1:
                 arg = arg.split('```python')[1].split('```')[0]

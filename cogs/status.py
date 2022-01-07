@@ -7,13 +7,23 @@ from asyncio import sleep
 from datetime import datetime, timedelta
 from discord_slash import cog_ext, SlashContext
 import psutil
-from platform import python_version, platform
 from threading import active_count
+
+template = '''
+Uptime : {0.uptime}
+Players : {0.players}
+
+CPU : {0.cpu:.2f}%
+Memory : {0.memory_used:.1f}MB / {0.memory_allocated:.1f}MB
+Frames : Sent {0.frames_sent:.1f}k
+         Nulled {0.frames_nulled:.1f}k
+         Failed {0.frames_deficit:.1f}k
+Lavalink : {0.lavalink_load:.2f}%
+'''
 
 class Status(Cog):
 	def __init__(self, bot: Bot):
 		self.bot = bot
-		self.nodes = ['1','2','3']
 
 	@cog_ext.cog_slash(name='ping', description='Send Latency')
 	async def _ping(self, ctx: SlashContext):
@@ -27,6 +37,57 @@ class Status(Cog):
 		embed.add_field(name='Client', value='{:.2f}ms'.format(self.bot.latency*1000))
 		embed.add_field(name='API', value='{:.2f}ms'.format(response.elapsed.total_seconds()*1000))
 		await message.edit(content=None, embed=embed)
+
+	def savedata(self):
+		interval = 60
+		data = open('data/data.json', 'r').read()
+
+	@Cog.listener()
+	async def on_message(self, message):
+		self.bot.data['rmessages'] += 1
+
+	@Cog.listener()
+	async def on_ready(self):
+		await self.bot.loop.run_in_executor(None, self.savedata)
+		interval = 2
+		if self.bot.user.id == 907167351634542593:
+			ms = await self.bot.get_channel(918558401812901888).fetch_message(928027610334777414)
+		if self.bot.user.id == 907531399433715752:
+			ms = await self.bot.get_channel(768763368692776970).send('a')
+		while True:
+			try:
+				await sleep(interval)
+				net = psutil.net_io_counters(pernic=True)
+				node = data.get_nodes(self.bot)
+				user = data.countuser(self)
+				embed = Embed(title='Status', colour=0x3498db, timestamp=datetime.utcnow())
+				embed.add_field(name='Ping', value='**Client** : {:.2f}ms\n**API** : {:.2f}ms'.format(self.bot.latency*1000, data.ping()), inline=False)
+				embed.add_field(name='Version', value='{} ({})'.format(self.bot.log3[:-1], open('data/builds.txt', 'r', encoding='utf_8').read()), inline=False)
+				for w in node['nodes']:
+					embed.add_field(name="Node-{}".format(w.identifier), value='```{}```'.format(template[1:].format(data.stats(w))))
+				embed.add_field(name='Players', value='{}'.format(node['players']), inline=False)
+				embed.add_field(name='Threads (ReverseTranslation)', value='{} ({})'.format(active_count(), len(self.bot.data['rev'])), inline=False)
+				embed.add_field(name='Errors', value='Coming soon...', inline=False)
+				if node['downnodes']:
+					embed.add_field(name='Down Nodes', value='`{}`'.format('`,`'.join(downnodes)), inline=False)
+				embed.add_field(name='Message', value='↑{} ↓{}'.format(self.bot.data['smessages'], self.bot.data['rmessages']), inline=False)
+				embed.add_field(name='Environment', value='Python {}, Java 13'.format(data.version), inline=False)
+				embed.add_field(name='System', value=data.platform, inline=False)
+				embed.add_field(name="Guilds", value=str(len(self.bot.guilds)), inline=False)
+				embed.add_field(name='Users (All)', value='{} ({})'.format(user['user'], user['userbot']), inline=False)
+				embed.add_field(name='CPU Usage', value='{:.1f}%'.format(psutil.cpu_percent()), inline=False)
+				embed.add_field(name='Memory Usage', value='{:.1f}GB / {:.1f}GB ({}%)'.format(psutil.virtual_memory().used / 1024 / 1024 / 1024, psutil.virtual_memory().total / 1024 / 1024 / 1024, psutil.virtual_memory().percent), inline=False)
+				try:
+					send,recieve = data.net(net, nett)
+					embed.add_field(name='Network Usage', value='↑{:.1f}KB ↓{:.1f}KB'.format(send / 1024 / interval, recieve / 1024 / interval), inline=False)
+				except:
+					embed.add_field(name='Network Usage', value='Calculating...', inline=False)
+				embed.add_field(name="Uptime", value=timedelta(seconds=int(datetime.utcnow().timestamp() - self.bot.data['start'])), inline=False)
+				embed.set_footer(text=f'Update Interval : {interval}s')
+				nett = net
+				await ms.edit(content=None, embed=embed)
+			except Exception as e:
+				self.bot.log(2, e)
 		
 	@command(aliases=[])
 	async def status(self, ctx: Context):
@@ -99,101 +160,6 @@ class Status(Cog):
 		embed.add_field(name='API', value='{:.2f}ms'.format(response.elapsed.total_seconds()*1000))'''
 		embed = Embed(title='Status', description=''.join(desc), colour=s.color1)
 		await message.edit(content=None, embed=embed)
-
-	def savedata(self):
-		interval = 60
-		data = open('data/data.json', 'r').read()
-
-	@Cog.listener()
-	async def on_message(self, message):
-		self.bot.data['rmessages'] += 1
-
-	@Cog.listener()
-	async def on_ready(self):
-		await self.bot.loop.run_in_executor(None, self.savedata)
-		interval = 2
-		channel = self.bot.get_channel(918558401812901888)
-		if self.bot.user.id == 907167351634542593:
-			ms = await channel.fetch_message(928027610334777414)
-		if self.bot.user.id == 907531399433715752:
-			ms = await channel.fetch_message(928027515505754154)
-		while True:
-			try:
-				await sleep(interval)
-				net = psutil.net_io_counters(pernic=True)
-				embed = Embed(title='Bot Status', colour=0x3498db, timestamp=datetime.utcnow())
-				nodes = 0
-				players = []
-				us = 0
-				eu = 0
-				downnodes = []
-				for node in self.nodes:
-					try:
-						temp = self.bot.nodes.get_node(identifier=node)
-						if temp.is_available:
-							nodes += 1
-							if node.startswith('2-'):
-								eu += 1
-							else:
-								us += 1
-						else:
-							downnodes.append(node)
-						players += temp.players
-					except Exception as e:
-						self.bot.log(4, e)
-						downnodes.append(node)
-				embed.add_field(name='Ping', value='**Client** : {:.2f}ms\n**WebSocket** : {:.2f}ms'.format(self.bot.latency*1000, post('https://discord.com/api/v6', timeout=3).elapsed.total_seconds()*1000), inline=False)
-				embed.add_field(name='Version', value='{} ({})'.format(self.bot.log3[:-1], open('data/builds.txt', 'r', encoding='utf_8').read()), inline=False)
-				embed.add_field(name='Nodes', value='{}/{}'.format(nodes, len(self.nodes)), inline=False)
-				embed.add_field(name='Players', value='{}'.format(len(players)), inline=False)
-				embed.add_field(name='Threads (ReverseTranslation)', value='{} ({})'.format(active_count(), len(self.bot.data['rev'])), inline=False)
-				embed.add_field(name='Errors', value='Coming soon...', inline=False)
-				if downnodes:
-					embed.add_field(name='Down Nodes', value='`{}`'.format('`,`'.join(downnodes)), inline=False)
-				embed.add_field(name='Message', value='↑{} ↓{}'.format(self.bot.data['smessages'], self.bot.data['rmessages']), inline=False)
-				embed.add_field(name='Environment', value='Python {}, Java 13'.format(python_version()), inline=False)
-				temp = platform(terse=False).split('-')
-				embed.add_field(name='System', value='{} {} ({})'.format(temp[0], temp[1], '-'.join(temp[2:])), inline=False)
-				embed.add_field(name="Guilds", value=str(len(self.bot.guilds)), inline=False)
-				user_count = []
-				user_bot_count = []
-				for guild in self.bot.guilds:
-					for member in guild.members:
-						user_bot_count.append(member.id)
-						if not member.bot:
-							user_count.append(member.id)
-				self.bot.data['user'] = len(user_count)
-				self.bot.data['userbot'] = len(user_bot_count)
-				embed.add_field(name='Users (All)', value='{} ({})'.format(self.bot.data['user'], self.bot.data['userbot']), inline=False)
-				embed.add_field(name='CPU Usage', value='{:.1f}%'.format(psutil.cpu_percent()), inline=False)
-				embed.add_field(name='Memory Usage', value='{:.1f}GB / {:.1f}GB ({}%)'.format(psutil.virtual_memory().used / 1024 / 1024 / 1024, psutil.virtual_memory().total / 1024 / 1024 / 1024, psutil.virtual_memory().percent), inline=False)
-				try:
-					try:
-						send = int(net['Wi-Fi 2'].bytes_sent - nett['Wi-Fi 2'].bytes_sent)
-						recieve = int(net['Wi-Fi 2'].bytes_recv - nett['Wi-Fi 2'].bytes_recv)
-					except:
-						try:
-							send = int(net['イーサネット 2'].bytes_sent - nett['イーサネット 2'].bytes_sent)
-							recieve = int(net['イーサネット 2'].bytes_recv - nett['イーサネット 2'].bytes_recv)
-						except:
-							try:
-								send = int(net['Wi-Fi 3'].bytes_sent - nett['Wi-Fi 3'].bytes_sent)
-								recieve = int(net['Wi-Fi 3'].bytes_recv - nett['Wi-Fi 3'].bytes_recv)
-							except:
-								send = int(net['eth0'].bytes_sent - nett['eth0'].bytes_sent)
-								recieve = int(net['eth0'].bytes_recv - nett['eth0'].bytes_recv)
-					embed.add_field(name='Network Usage', value='↑{:.1f}KB ↓{:.1f}KB'.format(send / 1024 / interval, recieve / 1024 / interval), inline=False)
-				except:
-					embed.add_field(name='Network Usage', value='Calculating...', inline=False)
-				embed.add_field(name="Uptime", value=timedelta(seconds=int(datetime.utcnow().timestamp() - self.bot.data['start'])), inline=False)
-				embed.set_footer(text=f'Update Interval : {interval}s')
-				nett = net
-				try:
-					await ms.edit(content=None, embed=embed)
-				except Exception as e:
-					self.bot.log(2, e)
-			except Exception as e:
-				self.bot.log(2, e)
 
 	@command()
 	async def ping(self, ctx: Context):

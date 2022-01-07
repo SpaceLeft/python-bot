@@ -9,10 +9,6 @@ from requests import get
 from lib import build, logging#, slash
 from traceback import print_exc
 
-async def on_socket_response(msg):
-	if msg["t"] != "INTERACTION_CREATE":
-		return
-
 disable = ''
 class bot(Bot):
 	def __init__(self):
@@ -21,10 +17,10 @@ class bot(Bot):
 		self.log = logging.setup()
 		self.data = {'start': datetime.utcnow().timestamp(), 'rev': {}, 'user': 0, 'userbot':0, 'version': None, 'smessages':0, 'rmessages': 0}
 		self.data['password'] = getenv('PASSWORD')
-		address = get('https://raw.githubusercontent.com/akishoudayo/python-bot/master/address.txt').text.split('\n')
+		self.data['address'] = get('https://raw.githubusercontent.com/akishoudayo/python-bot/master/address.txt').text.split('\n')
 		self.data['nodes'] = []
 		node_count = 1
-		for node in address:
+		for node in self.data['address']:
 			self.data['nodes'].append({"host": node, "port": 80, "name": str(node_count)})
 			node_count += 1
 		for cog in Path("cogs/").glob("*.py"):
@@ -47,7 +43,6 @@ class bot(Bot):
 					user.append(member.id)
 		self.data['user'] = len(user)
 		self.log(1, 'Logged In Successful ({} Users)'.format(len(user)))
-		self.add_listener(on_socket_response)
 		await self.change_presence(activity=Activity(name="{}help | {}".format(getenv('PREFIX'), self.data['version']), type=3))
 
 if __name__ == "__main__":

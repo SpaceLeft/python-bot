@@ -10,6 +10,9 @@ from datetime import datetime as d, timedelta
 from platform import python_version, platform
 import aiohttp
 
+async def on_socket_response(msg):
+	if msg["t"] != "INTERACTION_CREATE":
+		return
 
 class Help(Cog):
     def __init__(self, bot: Bot):
@@ -22,6 +25,7 @@ class Help(Cog):
                         'ping', 'reversetranslate', 'translate', 'status', 'seek', 'queue', 'skip', 'volume',
                         'bassboost', 'eq', 'nowplaying', 'repeat',  'shuffle', 'support', 'invite', 'join',
                         'leave']
+        #oself.bot.add_listener(on_socket_response)
 
 
     @command(aliases=['info'])
