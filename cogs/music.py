@@ -138,7 +138,7 @@ class Queue:
             self.repeat_mode = 0
         elif mode == "single":
             self.repeat_mode = 1
-        elif mode == "loop":
+        elif mode == "queue":
             self.repeat_mode = 2
 
     def empty(self):
