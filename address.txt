@@ -1,2 +1,1 @@
-ec2-3-83-22-95.compute-1.amazonaws.com
-ec2-34-201-37-47.compute-1.amazonaws.com
+ec2-3-83-45-128.compute-1.amazonaws.com
