@@ -23,7 +23,7 @@ version = python_version()
 
 class stats:
     def __init__(self, node):
-        self.uptime = timedelta(milliseconds=node.stats.uptime)
+        self.uptime = timedelta(seconds=int(node.stats.uptime/1000))
         self.players = len(node.players)
         self.name = f'Node-{node.identifier}'
         self.cpu = node.stats.system_load*100
@@ -67,7 +67,7 @@ def percent(current, max):
 
 def get_nodes(bot):
     result = {'players':0, 'count': 0, 'nodes': [], 'downnodes': []}
-    for n in range(1, len(bot.data['address'])):
+    for n in range(1, len(bot.data['address'])+1):
         node = bot.nodes.get_node(identifier=str(n))
         if node.is_available:
             result['count'] += 1

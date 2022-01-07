@@ -64,7 +64,7 @@ class Status(Cog):
 				embed.add_field(name='Ping', value='**Client** : {:.2f}ms\n**API** : {:.2f}ms'.format(self.bot.latency*1000, data.ping()), inline=False)
 				embed.add_field(name='Version', value='{} ({})'.format(self.bot.log3[:-1], open('data/builds.txt', 'r', encoding='utf_8').read()), inline=False)
 				for w in node['nodes']:
-					embed.add_field(name="Node-{}".format(w.identifier), value='```{}```'.format(template[1:].format(data.stats(w))))
+					embed.add_field(name="Node-{}".format(w.identifier), value='```{}```'.format(template[1:].format(data.stats(w))), inline=False)
 				embed.add_field(name='Players', value='{}'.format(node['players']), inline=False)
 				embed.add_field(name='Threads (ReverseTranslation)', value='{} ({})'.format(active_count(), len(self.bot.data['rev'])), inline=False)
 				embed.add_field(name='Errors', value='Coming soon...', inline=False)
