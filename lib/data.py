@@ -67,14 +67,17 @@ def percent(current, max):
 
 def get_nodes(bot):
     result = {'players':0, 'count': 0, 'nodes': [], 'downnodes': []}
-    for n in range(1, len(bot.data['address'])+1):
-        node = bot.nodes.get_node(identifier=str(n))
-        if node.is_available:
-            result['count'] += 1
-            result['nodes'].append(node)
-        else:
-            result['downnodes'].append(str(n))
-        result['players'] += len(node.players)
+    for n in range(len(bot.data['address'])):
+        try:
+            node = bot.nodes.get_node(identifier=str(n+1))
+            if node.is_available:
+                result['count'] += 1
+                result['nodes'].append(node)
+                result['players'] += len(node.players)
+            else:
+                result['downnodes'].append(str(n+1))
+        except:
+            result['downnodes'].append(str(n+1))
     return result
 
 

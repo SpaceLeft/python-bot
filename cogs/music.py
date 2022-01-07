@@ -269,9 +269,9 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         await self.bot.wait_until_ready()
 
         for node in self.bot.data['nodes']:
+            self.bot.nodes = self.wavelink
             try:
                 await self.wavelink.initiate_node(host=node['host'], port=node['port'], rest_uri='http://{}:{}'.format(node['host'], node['port']), password=self.bot.data['password'], identifier=node['name'], region='us', heartbeat=5)
-                self.bot.nodes = self.wavelink
             except Exception as e:
                 self.bot.log(2, e)
 

@@ -55,6 +55,8 @@ class Status(Cog):
 		if self.bot.user.id == 907531399433715752:
 			ms = await self.bot.get_channel(768763368692776970).send('a')
 		while True:
+			if self.bot.exit:
+				break
 			try:
 				await sleep(interval)
 				net = psutil.net_io_counters(pernic=True)
@@ -69,7 +71,7 @@ class Status(Cog):
 				embed.add_field(name='Threads (ReverseTranslation)', value='{} ({})'.format(active_count(), len(self.bot.data['rev'])), inline=False)
 				embed.add_field(name='Errors', value='Coming soon...', inline=False)
 				if node['downnodes']:
-					embed.add_field(name='Down Nodes', value='`{}`'.format('`,`'.join(downnodes)), inline=False)
+					embed.add_field(name='Down Nodes', value='`{}`'.format('`,`'.join(node['downnodes'])), inline=False)
 				embed.add_field(name='Message', value='↑{} ↓{}'.format(self.bot.data['smessages'], self.bot.data['rmessages']), inline=False)
 				embed.add_field(name='Environment', value='Python {}, Java 13'.format(data.version), inline=False)
 				embed.add_field(name='System', value=data.platform, inline=False)

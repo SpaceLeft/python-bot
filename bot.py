@@ -15,6 +15,7 @@ class bot(Bot):
 		self.mention = AllowedMentions(replied_user=False)
 		super().__init__(command_prefix=when_mentioned_or(getenv('PREFIX')), intents=Intents.all(), activity=Activity(name="Loading...", type=3), allowed_mentions=self.mention, help_command=None)
 		self.log = logging.setup()
+		self.exit = False
 		self.data = {'start': datetime.utcnow().timestamp(), 'rev': {}, 'user': 0, 'userbot':0, 'version': None, 'smessages':0, 'rmessages': 0}
 		self.data['password'] = getenv('PASSWORD')
 		self.data['address'] = get('https://raw.githubusercontent.com/akishoudayo/python-bot/master/address.txt').text.split('\n')
@@ -46,5 +47,12 @@ class bot(Bot):
 		await self.change_presence(activity=Activity(name="{}help | {}".format(getenv('PREFIX'), self.data['version']), type=3))
 
 if __name__ == "__main__":
-    bot = bot()
-    bot.run(getenv('TOKEN'), reconnect=True)
+	bot = bot()
+	try:
+		bot.run(getenv('TOKEN'), reconnect=True)
+	except Exception as e:
+		if e == KeyboardInterrupt:
+			bot.log(4, 'KeyboardInterrupt')
+			bot.exit = True
+		else:
+			bot.log(4, e)
