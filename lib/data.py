@@ -3,9 +3,11 @@ import settings as s
 from functools import partial as fpartial
 from json import loads
 from discord.ext import commands
-from datetime import timedelta
+from datetime import timedelta, datetime
 from asyncio import BaseEventLoop, get_event_loop
 from platform import python_version, platform
+import psutil
+from threading import active_count
 
 language = ['af', 'sq', 'am', 'ar', 'hy', 'az', 'eu', 'be', 'bn', 'bs', 'bg','ca', 'ceb', 'ny', 'zh-cn', 'zh-tw', 'co', 'hr', 'cs', 'da', 'nl', 'en', 'eo', 'et', 'tl', 'fi', 'fr', 'fy', 'gl', 'ka', 'de', 'el','gu', 'ht', 'ha', 'haw', 'iw', 'he', 'hi', 'hmn', 'hu', 'is', 'ig','id', 'ga', 'it', 'ja', 'jw', 'kn', 'kk', 'km', 'ko', 'ku', 'ky','lo', 'la', 'lv', 'lt', 'lb', 'mk', 'mg', 'ms', 'ml', 'mt', 'mi','mr', 'mn', 'my', 'ne', 'no', 'or', 'ps', 'fa', 'pl', 'pt', 'pa','ro', 'ru', 'sm', 'gd', 'sr', 'st', 'sn', 'sd', 'si', 'sk', 'sl','so', 'es', 'su', 'sw', 'sv', 'tg', 'ta', 'te', 'th', 'tr', 'uk','ur', 'ug', 'uz', 'vi', 'cy', 'xh', 'yi', 'yo', 'zu']
 
@@ -33,8 +35,37 @@ class stats:
         self.frames_nulled = node.stats.frames_nulled/1000
         self.frames_deficit = node.stats.frames_deficit/1000
         self.lavalink_load = node.stats.lavalink_load*100
+        self.penalty = node.stats.penalty.total
+        self.cpu_progress = progressbar(node.stats.system_load*100, 100)
+        self.memory_progress = progressbar(node.stats.memory_used, node.stats.memory_allocated)
+        self.memory_percent = percent(node.stats.memory_used, node.stats.memory_allocated)
+        self.lavalink_progress = progressbar(node.stats.lavalink_load*100, 100)
+        self.region = node.region
 
-def net(net, nett):
+class botstats:
+    def __init__(self, bot, interval, net, nett):
+        self.cpu = psutil.cpu_percent()
+        self.cpu_progress = progressbar(self.cpu, 100)
+        self.uptime = timedelta(seconds=int(datetime.utcnow().timestamp() - bot.data['start']))
+        self.ping = bot.latency*1000
+        if nett:
+            send, recieve = network(net, nett)
+            self.network_send = send / 1024 / interval
+            self.network_recieve = recieve / 1024 / interval
+        else:
+            self.network_send = 0
+            self.network_recieve = 0
+        self.platform = platform
+        self.rev = len(bot.data['rev'])
+        self.memory_used = psutil.virtual_memory().used / 1024 / 1024 / 1024
+        self.memory_total = psutil.virtual_memory().total / 1024 / 1024 / 1024
+        self.memory_usage = percent(psutil.virtual_memory().used, psutil.virtual_memory().total)
+        self.memory_progress = progressbar(psutil.virtual_memory().used, psutil.virtual_memory().total)
+        self.messages = '↑{} ↓{}'.format(bot.data['smessages'], bot.data['rmessages'])
+        self.version = '{} ({})'.format(bot.log3[:-1], open('data/builds.txt', 'r', encoding='utf_8').read())
+        self.threads = active_count()
+
+def network(net, nett):
     if 'eth0' in net:
         send = int(net['eth0'].bytes_sent - nett['eth0'].bytes_sent)
         recieve = int(net['eth0'].bytes_recv - nett['eth0'].bytes_recv)
@@ -58,16 +89,16 @@ def progressbar(current, max):
     progress = int(ratio * length)
     bar =  f'[{"=" * progress}{" " * (length - progress)}]'
     percentage = int(ratio * 100)
-    return f'{bar}'# {percentage}%'
+    return bar# {percentage}%'
 
 def percent(current, max):
     ratio = current / max
-    percentage = int(ratio * 100)
+    percentage = ratio * 100
     return percentage
 
 def get_nodes(bot):
     result = {'players':0, 'count': 0, 'nodes': [], 'downnodes': []}
-    for n in range(len(bot.data['address'])):
+    for n in range(len(bot.data['nodes'])):
         try:
             node = bot.nodes.get_node(identifier=str(n+1))
             if node.is_available:

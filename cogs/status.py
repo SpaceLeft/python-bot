@@ -7,19 +7,36 @@ from asyncio import sleep
 from datetime import datetime, timedelta
 from discord_slash import cog_ext, SlashContext
 import psutil
-from threading import active_count
 
-template = '''
+template_bot = '''```
+CPU
+{0.cpu_progress} {0.cpu:.1f}%
+Memory ({0.memory_used:.1f}GB/{0.memory_total:.1f}GB)
+{0.memory_progress} {0.memory_usage:.1f}%
+Network : ↑{0.network_send:.1f}KB ↓{0.network_recieve:.1f}KB
+Threads : {0.threads} (Rev {0.rev})
+
+OS : {0.platform}
+Version : {0.version}
+Messages : {0.messages}
+Ping : {0.ping:.2f}ms
+Downnodes : {1}
+Uptime : {0.uptime}
+```'''
+
+template_node = '''```
+CPU
+{0.cpu_progress} {0.cpu:.2f}%
+Memory ({0.memory_used:.1f}MB/{0.memory_allocated:.1f}MB)
+{0.memory_progress} {0.memory_percent:.2f}%
+Lavalink Load
+{0.lavalink_progress} {0.lavalink_load:.2f}%
+
 Uptime : {0.uptime}
 Players : {0.players}
-
-CPU : {0.cpu:.2f}%
-Memory : {0.memory_used:.1f}MB / {0.memory_allocated:.1f}MB
-Frames : Sent {0.frames_sent:.1f}k
-         Nulled {0.frames_nulled:.1f}k
-         Failed {0.frames_deficit:.1f}k
-Lavalink : {0.lavalink_load:.2f}%
-'''
+Penalty : {0.penalty:.2f}
+Region : {0.region}
+```'''
 
 class Status(Cog):
 	def __init__(self, bot: Bot):
@@ -51,43 +68,28 @@ class Status(Cog):
 		await self.bot.loop.run_in_executor(None, self.savedata)
 		interval = 2
 		if self.bot.user.id == 907167351634542593:
-			ms = await self.bot.get_channel(918558401812901888).fetch_message(928027610334777414)
+			ms = await self.bot.get_channel(918558401812901888).fetch_message(929433145114263633)
 		if self.bot.user.id == 907531399433715752:
 			ms = await self.bot.get_channel(768763368692776970).send('a')
+		nett = None
 		while True:
-			if self.bot.exit:
-				break
 			try:
 				await sleep(interval)
 				net = psutil.net_io_counters(pernic=True)
 				node = data.get_nodes(self.bot)
 				user = data.countuser(self)
-				embed = Embed(title='Status', colour=0x3498db, timestamp=datetime.utcnow())
-				embed.add_field(name='Ping', value='**Client** : {:.2f}ms\n**API** : {:.2f}ms'.format(self.bot.latency*1000, data.ping()), inline=False)
-				embed.add_field(name='Version', value='{} ({})'.format(self.bot.log3[:-1], open('data/builds.txt', 'r', encoding='utf_8').read()), inline=False)
+				embed = Embed(title='Node Status', colour=0x3498db, timestamp=datetime.utcnow())
 				for w in node['nodes']:
-					embed.add_field(name="Node-{}".format(w.identifier), value='```{}```'.format(template[1:].format(data.stats(w))), inline=False)
-				embed.add_field(name='Players', value='{}'.format(node['players']), inline=False)
-				embed.add_field(name='Threads (ReverseTranslation)', value='{} ({})'.format(active_count(), len(self.bot.data['rev'])), inline=False)
-				embed.add_field(name='Errors', value='Coming soon...', inline=False)
-				if node['downnodes']:
-					embed.add_field(name='Down Nodes', value='`{}`'.format('`,`'.join(node['downnodes'])), inline=False)
-				embed.add_field(name='Message', value='↑{} ↓{}'.format(self.bot.data['smessages'], self.bot.data['rmessages']), inline=False)
-				embed.add_field(name='Environment', value='Python {}, Java 13'.format(data.version), inline=False)
-				embed.add_field(name='System', value=data.platform, inline=False)
-				embed.add_field(name="Guilds", value=str(len(self.bot.guilds)), inline=False)
-				embed.add_field(name='Users (All)', value='{} ({})'.format(user['user'], user['userbot']), inline=False)
-				embed.add_field(name='CPU Usage', value='{:.1f}%'.format(psutil.cpu_percent()), inline=False)
-				embed.add_field(name='Memory Usage', value='{:.1f}GB / {:.1f}GB ({}%)'.format(psutil.virtual_memory().used / 1024 / 1024 / 1024, psutil.virtual_memory().total / 1024 / 1024 / 1024, psutil.virtual_memory().percent), inline=False)
-				try:
-					send,recieve = data.net(net, nett)
-					embed.add_field(name='Network Usage', value='↑{:.1f}KB ↓{:.1f}KB'.format(send / 1024 / interval, recieve / 1024 / interval), inline=False)
-				except:
-					embed.add_field(name='Network Usage', value='Calculating...', inline=False)
-				embed.add_field(name="Uptime", value=timedelta(seconds=int(datetime.utcnow().timestamp() - self.bot.data['start'])), inline=False)
+					embed.add_field(name="Node-{}".format(w.identifier), value=template_node.format(data.stats(w)), inline=False)
 				embed.set_footer(text=f'Update Interval : {interval}s')
-				nett = net
+				if node['downnodes']:
+					downnodes = '`{}`'.format('`,`'.join(node['downnodes']))
+				else:
+					downnodes = None
+				embed.add_field(name='Bot', value=template_bot.format(data.botstats(self.bot, interval, net, nett), downnodes))
+				embed.set_footer(text=f'Update Interval : {interval}s')
 				await ms.edit(content=None, embed=embed)
+				nett = net
 			except Exception as e:
 				self.bot.log(2, e)
 		

@@ -1,1 +1,9 @@
-ec2-3-87-213-217.compute-1.amazonaws.com
+{"japan":[
+    "ec2-18-179-35-37.ap-northeast-1.compute.amazonaws.com",
+    "ec2-54-199-223-24.ap-northeast-1.compute.amazonaws.com",
+    "ec2-13-115-34-53.ap-northeast-1.compute.amazonaws.com"],
+"us_central":[
+    "ec2-3-85-59-179.compute-1.amazonaws.com",
+    "ec2-54-167-247-157.compute-1.amazonaws.com",
+    "ec2-54-162-43-69.compute-1.amazonaws.com"
+]}

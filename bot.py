@@ -8,6 +8,7 @@ from os import getenv
 from requests import get
 from lib import build, logging#, slash
 from traceback import print_exc
+from json import loads
 
 disable = ''
 class bot(Bot):
@@ -18,14 +19,17 @@ class bot(Bot):
 		self.exit = False
 		self.data = {'start': datetime.utcnow().timestamp(), 'rev': {}, 'user': 0, 'userbot':0, 'version': None, 'smessages':0, 'rmessages': 0}
 		self.data['password'] = getenv('PASSWORD')
-		self.data['address'] = get('https://raw.githubusercontent.com/akishoudayo/python-bot/master/address.txt').text.split('\n')
+		self.data['address'] = loads(open('address.txt', 'r').read())
+		#self.data['address'] = get('https://raw.githubusercontent.com/akishoudayo/python-bot/master/address.txt').json()
 		print('\n'.join(self.data['address']))
 		print(open('address.txt', 'r').read())
 		self.data['nodes'] = []
 		node_count = 1
-		for node in self.data['address']:
-			self.data['nodes'].append({"host": node, "port": 80, "name": str(node_count)})
-			node_count += 1
+		for region in self.data['address'].keys():
+			for node in self.data['address'][region]:
+				print(f'{node} : {region}')
+				self.data['nodes'].append({"host": node, "port": 80, "name": str(node_count), "region": region})
+				node_count += 1
 		for cog in Path("cogs/").glob("*.py"):
 			try:
 				if disable.find(cog.stem) == -1:
